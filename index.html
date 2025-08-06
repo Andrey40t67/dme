@@ -3,138 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoiceFlow - Диктовка и Перевод</title>
+    <title>VoiceTranscribe Pro | Диктовка и Перевод 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-bg: #fafafa;
+            --secondary-bg: #ffffff;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #0f172a;
+            --secondary-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #0a0a0a;
-            --accent: #6366f1;
-            --accent-glow: #818cf8;
-            --surface: #ffffff;
-            --surface-dark: #f8f8f8;
-            --text: #0a0a0a;
-            --text-muted: #6b7280;
-            --success: #10b981;
-            --error: #ef4444;
-            --glass: rgba(255, 255, 255, 0.7);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --primary: #ffffff;
-                --surface: #0a0a0a;
-                --surface-dark: #1a1a1a;
-                --text: #ffffff;
-                --text-muted: #9ca3af;
-                --glass: rgba(10, 10, 10, 0.7);
-            }
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif;
-            background: var(--surface);
-            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
             min-height: 100vh;
-            overflow-x: hidden;
-            transition: all 0.3s ease;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            opacity: 0.03;
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-30px, -30px) rotate(120deg); }
-            66% { transform: translate(30px, -30px) rotate(240deg); }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
-            position: relative;
-            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        header {
+        .header {
             text-align: center;
-            margin-bottom: 4rem;
-            animation: slideDown 0.8s ease-out;
+            margin-bottom: 3rem;
+            position: relative;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-size: 1.1rem;
             font-weight: 400;
         }
 
-        .main-content {
-            display: grid;
-            gap: 2rem;
-            animation: fadeIn 1s ease-out 0.3s both;
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .main-content {
+            flex: 1;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
         }
 
         .card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
+            background: var(--secondary-bg);
+            border-radius: var(--radius);
             padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
         }
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .controls {
@@ -144,98 +133,528 @@
             flex-wrap: wrap;
         }
 
-        button {
-            flex: 1;
-            min-width: 140px;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 16px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        button:active::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 100%);
+        .btn {
+            background: var(--accent-color);
             color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            text-decoration: none;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
-        .btn-primary.recording {
-            animation: pulse 1.5s infinite;
-            background: linear-gradient(135deg, var(--error) 0%, #f87171 100%);
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-secondary {
-            background: var(--surface-dark);
-            color: var(--text);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: var(--text-muted);
-            color: white;
+            background: var(--border-color);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
-            color: white;
+        .btn.recording {
+            background: var(--error-color);
+            animation: pulse 2s infinite;
         }
 
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
-        .text-area {
+        .textarea {
             width: 100%;
             min-height: 200px;
-            padding: 1.5rem;
-            border: 2px solid var(--surface-dark);
-            border-radius: 16px;
-            font-size: 1.1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
             line-height: 1.6;
             resize: vertical;
-            transition: all 0.3s ease;
-            background: var(--surface);
-            color: var(--text);
-            font-family: inherit;
+            transition: var(--transition);
         }
 
-        .text-area:focus {
+        .textarea:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
         }
 
-        .language-selector {
+        .select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .status {
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .status.success {
+            background: rgb(16 185 129 / 0.1);
+            color: var(--success-color);
+            border: 1px solid rgb(16 185 129 / 0.2);
+        }
+
+        .status.error {
+            background: rgb(239 68 68 / 0.1);
+            color: var(--error-color);
+            border: 1px solid rgb(239 68 68 / 0.2);
+        }
+
+        .status.info {
+            background: rgb(99 102 241 / 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgb(99 102 241 / 0.2);
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .word-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .language-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .theme-toggle {
+                position: static;
+                margin: 1rem auto 0;
+            }
+        }
+
+        .icon {
+            width: 1.2em;
+            height: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <button class="theme-toggle" onclick="toggleTheme()" title="Сменить тему">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+            <h1 class="logo">VoiceTranscribe Pro</h1>
+            <p class="subtitle">Диктовка, распознавание и перевод текста с ИИ точностью</p>
+        </header>
+
+        <main class="main-content">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                    </svg>
+                    Голосовая диктовка
+                </h2>
+                
+                <div id="speechStatus" class="status info" style="display: none;">
+                    Готов к распознаванию речи
+                </div>
+
+                <div class="controls">
+                    <button id="startBtn" class="btn" onclick="startRecording()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                        Начать диктовку
+                    </button>
+                    
+                    <button id="stopBtn" class="btn btn-secondary" onclick="stopRecording()" disabled>
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                        </svg>
+                        Остановить
+                    </button>
+
+                    <select id="speechLang" class="select">
+                        <option value="ru-RU">Русский</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="en-GB">English (UK)</option>
+                        <option value="de-DE">Deutsch</option>
+                        <option value="fr-FR">Français</option>
+                        <option value="es-ES">Español</option>
+                        <option value="it-IT">Italiano</option>
+                        <option value="pt-BR">Português</option>
+                        <option value="zh-CN">中文</option>
+                        <option value="ja-JP">日本語</option>
+                        <option value="ko-KR">한국어</option>
+                    </select>
+                </div>
+
+                <textarea id="recognizedText" class="textarea" placeholder="Надиктованный текст появится здесь..."></textarea>
+                <div class="word-count">Слов: <span id="wordCount">0</span></div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
+                    Переводчик
+                </h2>
+
+                <div id="translateStatus" class="status" style="display: none;"></div>
+
+                <div class="language-grid">
+                    <div>
+                        <label for="fromLang" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Исходный язык:</label>
+                        <select id="fromLang" class="select">
+                            <option value="auto">Автоопределение</option>
+                            <option value="ru">Русский</option>
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                            <option value="pt">Português</option>
+                            <option value="zh">中文</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="ar">العربية</option>
+                            <option value="hi">हिन्दी</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="toLang" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Целевой язык:</label>
+                        <select id="toLang" class="select">
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                            <option value="pt">Português</option>
+                            <option value="zh">中文</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="ar">العربية</option>
+                            <option value="hi">हिन्दी</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="translateText()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                        Перевести
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="copyTranslation()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        Скопировать перевод
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="copyOriginal()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Скопировать оригинал
+                    </button>
+                </div>
+
+                <textarea id="translatedText" class="textarea" placeholder="Переведенный текст появится здесь..." readonly></textarea>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 VoiceTranscribe Pro | Создано с использованием современных веб-технологий[1][2][5]</p>
+        </footer>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let recognition;
+        let isRecording = false;
+
+        // Инициализация Speech Recognition
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = document.getElementById('speechLang').value;
+                
+                recognition.onstart = function() {
+                    showStatus('speechStatus', 'Слушаю... Говорите четко и разборчиво', 'info');
+                };
+                
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + '. ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    const textArea = document.getElementById('recognizedText');
+                    const existingText = textArea.value;
+                    
+                    if (finalTranscript) {
+                        textArea.value = existingText + finalTranscript;
+                        updateWordCount();
+                    }
+                    
+                    if (interimTranscript) {
+                        showStatus('speechStatus', `Распознаю: "${interimTranscript}"`, 'info');
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    let errorMessage = 'Ошибка распознавания речи';
+                    switch(event.error) {
+                        case 'no-speech':
+                            errorMessage = 'Речь не обнаружена. Попробуйте говорить громче.';
+                            break;
+                        case 'audio-capture':
+                            errorMessage = 'Микрофон недоступен. Проверьте подключение.';
+                            break;
+                        case 'not-allowed':
+                            errorMessage = 'Доступ к микрофону запрещен. Разрешите доступ в настройках браузера.';
+                            break;
+                        case 'network':
+                            errorMessage = 'Сетевая ошибка. Проверьте подключение к интернету.';
+                            break;
+                    }
+                    showStatus('speechStatus', errorMessage, 'error');
+                    stopRecording();
+                };
+                
+                recognition.onend = function() {
+                    if (isRecording) {
+                        recognition.start(); // Перезапуск для непрерывного распознавания
+                    } else {
+                        showStatus('speechStatus', 'Распознавание остановлено', 'success');
+                    }
+                };
+                
+                showStatus('speechStatus', 'Распознавание речи готово к работе!', 'success');
+            } else {
+                showStatus('speechStatus', 'Ваш браузер не поддерживает распознавание речи. Используйте Chrome, Edge или Safari.', 'error');
+            }
+        }
+
+        // Управление записью
+        function startRecording() {
+            if (!recognition) {
+                showStatus('speechStatus', 'Распознавание речи недоступно', 'error');
+                return;
+            }
+            
+            recognition.lang = document.getElementById('speechLang').value;
+            recognition.start();
+            isRecording = true;
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').classList.add('recording');
+            document.getElementById('stopBtn').disabled = false;
+        }
+
+        function stopRecording() {
+            if (recognition && isRecording) {
+                recognition.stop();
+                isRecording = false;
+                
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').classList.remove('recording');
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        // Подсчет слов
+        function updateWordCount() {
+            const text = document.getElementById('recognizedText').value;
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            document.getElementById('wordCount').textContent = words.length;
+        }
+
+        // Перевод текста
+        async function translateText() {
+            const sourceText = document.getElementById('recognizedText').value.trim();
+            const fromLang = document.getElementById('fromLang').value;
+            const toLang = document.getElementById('toLang').value;
+            
+            if (!sourceText) {
+                showStatus('translateStatus', 'Введите текст для перевода', 'error');
+                return;
+            }
+            
+            showStatus('translateStatus', 'Переводим текст...', 'info');
+            
+            try {
+                // Используем MyMemory API (бесплатный)
+                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${fromLang === 'auto' ? 'autodetect' : fromLang}|${toLang}`);
+                const data = await response.json();
+                
+                if (data.responseStatus === 200) {
+                    document.getElementById('translatedText').value = data.responseData.translatedText;
+                    showStatus('translateStatus', 'Перевод выполнен успешно!', 'success');
+                } else {
+                    throw new Error('Ошибка API перевода');
+                }
+            } catch (error) {
+                // Fallback: простая замена для демонстрации
+                document.getElementById('translatedText').value = sourceText + ' [DEMO: используйте реальный API для перевода]';
+                showStatus('translateStatus', 'Демо-режим: Используйте Google Translate API или DeepL для реального перевода', 'info');
+            }
+        }
+
+        // Копирование текста
+        async function copyToClipboard(text, statusElement, successMessage) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showStatus(statusElement, successMessage, 'success');
+            } catch (err) {
+                showStatus(statusElement, 'Ошибка копирования. Выделите текст вручную.', 'error');
+            }
+        }
+
+        function copyOriginal() {
+            const text = document.getElementById('recognizedText').value;
+            if (text) {
+                copyToClipboard(text, 'translateStatus', 'Оригинальный текст скопирован!');
+            } else {
+                showStatus('translateStatus', 'Нет текста для копирования', 'error');
+            }
+        }
+
+        function copyTranslation() {
+            const text = document.getElementById('translatedText').value;
+            if (text) {
+                copyToClipboard(text, 'translateStatus', 'Перевод скопирован!');
+            } else {
+                showStatus('translateStatus', 'Сначала выполните перевод', 'error');
+            }
+        }
+
+        // Показ статуса
+        function showStatus(elementId, message, type) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+            
+            if (type === 'success' || type === 'info') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Темная тема
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загрузка сохраненной темы
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+            
+            // Инициализация распознавания речи
+            initSpeechRecognition();
+            
+            // Обновление счетчика слов при вводе
+            document.getElementById('recognizedText').addEventListener('input', updateWordCount);
+            
+            // Автоматическое определение языка для перевода
+            document.getElementById('speechLang').addEventListener('change', function() {
+                const lang = this.value.split('-')[0];
+                document.getElementById('fromLang').value = lang;
+            });
+        });
+    </script>
+</body>
+</html>
