@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 МЕГА 3D ИГРА - АВТОАКТИВАЦИЯ ГОЛОСА</title>
+    <title>🔥 ИДЕАЛЬНАЯ 3D ИГРА - МГНОВЕННЫЙ ОТКЛИК</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,11 +14,11 @@
         }
         
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(45deg, #0a0a0a, #1a1a3a, #2a0a3a);
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a0033 25%, #330066 50%, #660033 75%, #330000 100%);
             overflow: hidden;
-            color: #00ff00;
-            cursor: none;
+            color: #00ffff;
+            cursor: crosshair;
         }
         
         #gameContainer {
@@ -29,8 +31,8 @@
             display: block;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, #000428 0%, #004e92 100%);
-            filter: contrast(1.2) brightness(1.1) saturate(1.3);
+            background: radial-gradient(circle at center, #000 0%, #001122 30%, #002244 60%, #003366 100%);
+            filter: contrast(1.4) brightness(1.2) saturate(1.5);
         }
         
         #ui {
@@ -40,204 +42,164 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 2000;
         }
         
         #voiceStatus {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            background: linear-gradient(45deg, rgba(0,255,0,0.9), rgba(0,200,0,0.7));
-            padding: 12px 25px;
-            border-radius: 25px;
-            border: 3px solid #00ff00;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 0 0 15px #00ff00;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0,255,0,0.2);
-            animation: activeGlow 1.5s infinite alternate;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            padding: 10px 25px;
+            border-radius: 20px;
+            border: 2px solid #00ffff;
+            font-size: 16px;
+            font-weight: 900;
+            text-shadow: 0 0 10px #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            animation: superGlow 1s infinite alternate;
         }
         
-        @keyframes activeGlow {
+        @keyframes superGlow {
             0% { 
-                box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0,255,0,0.2);
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
                 transform: scale(1);
             }
             100% { 
-                box-shadow: 0 0 50px rgba(0, 255, 0, 0.8), inset 0 0 20px rgba(0,255,0,0.4);
-                transform: scale(1.05);
+                box-shadow: 0 0 50px rgba(0, 255, 0, 1);
+                transform: scale(1.02);
             }
         }
         
-        #commands {
+        #commandPanel {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, rgba(255,0,100,0.9), rgba(100,0,255,0.8));
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, rgba(255, 0, 150, 0.95), rgba(150, 0, 255, 0.9));
             padding: 15px;
             border-radius: 15px;
-            border: 2px solid #ff0080;
-            max-width: 320px;
-            box-shadow: 0 0 25px rgba(255,0,128,0.4);
+            border: 3px solid #ff00aa;
+            max-width: 350px;
+            box-shadow: 0 0 40px rgba(255, 0, 170, 0.7);
         }
         
-        #commands h3 {
-            color: #ff0080;
-            margin-bottom: 12px;
+        #commandPanel h3 {
+            color: #ff00aa;
+            margin-bottom: 10px;
             text-align: center;
-            font-size: 16px;
-            text-shadow: 0 0 10px #ff0080;
+            font-size: 14px;
+            font-weight: 900;
         }
         
-        #commands ul {
-            list-style: none;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        
-        #commands li {
-            margin: 4px 0;
-            padding: 6px 10px;
-            background: rgba(255, 0, 128, 0.2);
+        .cmd-group {
+            background: rgba(0, 0, 0, 0.4);
+            margin: 8px 0;
+            padding: 8px;
             border-radius: 8px;
-            border-left: 3px solid #ff0080;
-            transition: all 0.3s ease;
+            border-left: 4px solid #ff00aa;
         }
         
-        #gameInfo {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: linear-gradient(45deg, rgba(0,255,255,0.9), rgba(0,150,255,0.8));
-            padding: 12px 20px;
-            border-radius: 15px;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 25px rgba(0,255,255,0.4);
-        }
-        
-        #gameInfo div {
+        .cmd-item {
+            font-size: 11px;
             margin: 3px 0;
-            font-weight: bold;
-            text-shadow: 0 0 8px #00ffff;
+            font-weight: 700;
+            color: #ffffff;
         }
         
-        #autoStart {
+        #gameStats {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.95), rgba(0, 200, 255, 0.9));
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+        }
+        
+        .stat-line {
+            margin: 2px 0;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        
+        #responseIndicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #00ff00, #44ff44);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #00ff00;
+            font-weight: 900;
+            font-size: 12px;
+            animation: pulse 0.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        #startBtn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 25px 50px;
-            font-size: 20px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff);
+            font-size: 22px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff0080, #8000ff, #0080ff, #00ff80);
+            background-size: 400% 400%;
             border: none;
             border-radius: 50px;
             color: white;
             cursor: pointer;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             transition: all 0.3s ease;
             pointer-events: all;
-            animation: megaGlow 2s infinite;
+            animation: rainbowGlow 2s ease-in-out infinite;
+            font-family: 'Orbitron', monospace;
         }
         
-        @keyframes megaGlow {
-            0%, 100% { 
-                box-shadow: 0 0 30px rgba(255,0,128,0.6), 0 0 60px rgba(128,0,255,0.4);
-                transform: translate(-50%, -50%) scale(1);
+        @keyframes rainbowGlow {
+            0%, 100% {
+                background-position: 0% 50%;
+                box-shadow: 0 0 30px rgba(255,0,128,0.8);
             }
-            50% { 
-                box-shadow: 0 0 50px rgba(255,0,128,0.8), 0 0 80px rgba(128,0,255,0.6);
-                transform: translate(-50%, -50%) scale(1.05);
+            25% {
+                background-position: 100% 50%;
+                box-shadow: 0 0 30px rgba(128,0,255,0.8);
+            }
+            50% {
+                background-position: 50% 100%;
+                box-shadow: 0 0 30px rgba(0,128,255,0.8);
+            }
+            75% {
+                background-position: 0% 100%;
+                box-shadow: 0 0 30px rgba(0,255,128,0.8);
             }
         }
         
-        #autoStart:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: linear-gradient(45deg, #ff0040, #4000ff, #0040ff);
-        }
+        .hidden { display: none; }
         
-        .hidden {
-            display: none;
-        }
-        
-        #forceActivation {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform: translate(-50%, 50%);
-            background: linear-gradient(45deg, #ff4444, #ff8800);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            pointer-events: all;
-            box-shadow: 0 0 20px rgba(255,68,68,0.6);
-            animation: urgentPulse 1s infinite;
-        }
-        
-        @keyframes urgentPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        /* Мега адаптивность */
         @media (max-width: 768px) {
-            #commands {
-                right: 10px;
-                top: 10px;
-                max-width: 280px;
-                font-size: 12px;
+            #commandPanel {
+                max-width: 300px;
+                font-size: 10px;
+                right: 5px;
+                top: 5px;
             }
-            
             #voiceStatus {
-                left: 10px;
-                top: 80px;
                 font-size: 14px;
+                left: 5px;
+                top: 5px;
             }
-            
-            #gameInfo {
-                bottom: 10px;
-                left: 10px;
-                font-size: 13px;
-            }
-            
-            #autoStart {
-                padding: 20px 40px;
-                font-size: 18px;
-            }
-        }
-        
-        /* Частицы в UI */
-        .ui-particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #00ff00;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: uiFloat 4s infinite ease-in-out;
-        }
-        
-        @keyframes uiFloat {
-            0%, 100% { 
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 0.8;
-            }
-            25% { 
-                transform: translate(10px, -20px) rotate(90deg);
-                opacity: 1;
-            }
-            50% { 
-                transform: translate(-10px, -40px) rotate(180deg);
-                opacity: 0.6;
-            }
-            75% { 
-                transform: translate(-20px, -20px) rotate(270deg);
-                opacity: 1;
+            #gameStats {
+                font-size: 12px;
+                left: 5px;
+                bottom: 5px;
             }
         }
     </style>
@@ -247,160 +209,158 @@
         <canvas id="gameCanvas"></canvas>
         
         <div id="ui">
-            <div id="voiceStatus">🎤 ГОЛОС: ГОТОВ К АКТИВАЦИИ</div>
+            <div id="voiceStatus">🎤 ГОЛОС: ПОДГОТОВКА...</div>
             
-            <div id="commands">
-                <h3>🎮 МЕГА ГОЛОСОВЫЕ КОМАНДЫ</h3>
-                <ul>
-                    <li>🚀 "ВПЕРЕД" - Турбо движение вперед</li>
-                    <li>🔄 "НАЗАД" - Реверс движение</li>
-                    <li>⬅️ "ВЛЕВО" - Левый маневр</li>
-                    <li>➡️ "ВПРАВО" - Правый маневр</li>
-                    <li>⬆️ "ВВЕРХ" - Взлет в космос</li>
-                    <li>⬇️ "ВНИЗ" - Приземление</li>
-                    <li>🌟 "УСКОРЕНИЕ" - Мега скорость</li>
-                    <li>🐌 "МЕДЛЕННО" - Точное управление</li>
-                    <li>🎯 "СТОП" - Экстренная остановка</li>
-                    <li>💥 "ВЗРЫВ" - Мега эффекты</li>
-                    <li>🌈 "ЦВЕТ" - Смена цвета</li>
-                    <li>⚡ "МОЛНИЯ" - Супер атака</li>
-                </ul>
+            <div id="commandPanel">
+                <h3>⚡ МГНОВЕННЫЕ КОМАНДЫ</h3>
+                <div class="cmd-group">
+                    <div class="cmd-item">🎯 "ГОУ" / "ВПЕРЕД" - Движение вперед</div>
+                    <div class="cmd-item">🔄 "БЭК" / "НАЗАД" - Движение назад</div>
+                    <div class="cmd-item">⬅️ "ЛЕВО" - Поворот влево</div>
+                    <div class="cmd-item">➡️ "ПРАВО" - Поворот вправо</div>
+                </div>
+                <div class="cmd-group">
+                    <div class="cmd-item">🚀 "АП" / "ВВЕРХ" - Взлет</div>
+                    <div class="cmd-item">⬇️ "ДАУН" / "ВНИЗ" - Снижение</div>
+                    <div class="cmd-item">⚡ "ФАСТ" / "БЫСТРО" - Ускорение</div>
+                    <div class="cmd-item">🐌 "СЛОУ" / "МЕДЛЕННО" - Замедление</div>
+                </div>
+                <div class="cmd-group">
+                    <div class="cmd-item">⛔ "СТОП" - Остановка</div>
+                    <div class="cmd-item">💥 "БУМ" / "ВЗРЫВ" - Эффекты</div>
+                    <div class="cmd-item">🌈 "КОЛОР" / "ЦВЕТ" - Смена цвета</div>
+                    <div class="cmd-item">⚡ "FLASH" / "МОЛНИЯ" - Молния</div>
+                </div>
             </div>
             
-            <div id="gameInfo">
-                <div>⚡ Мега-Скорость: <span id="speed">0.00</span></div>
-                <div>🌍 Координата X: <span id="posX">0.00</span></div>
-                <div>🌍 Координата Y: <span id="posY">0.00</span></div>
-                <div>🌍 Координата Z: <span id="posZ">0.00</span></div>
-                <div>🎤 Статус: <span id="voiceReady">ОЖИДАНИЕ</span></div>
+            <div id="gameStats">
+                <div class="stat-line">⚡ Скорость: <span id="speedVal">0.0</span></div>
+                <div class="stat-line">📍 X: <span id="xPos">0.0</span></div>
+                <div class="stat-line">📍 Y: <span id="yPos">0.0</span></div>
+                <div class="stat-line">📍 Z: <span id="zPos">0.0</span></div>
+                <div class="stat-line">🎤 Команд: <span id="cmdCount">0</span></div>
             </div>
             
-            <button id="autoStart">🚀 АВТОЗАПУСК МЕГА ИГРЫ</button>
-            <button id="forceActivation" class="hidden">🔥 ПРИНУДИТЕЛЬНАЯ АКТИВАЦИЯ ГОЛОСА</button>
+            <div id="responseIndicator">⚡ МГНОВЕННЫЙ ОТКЛИК</div>
+            
+            <button id="startBtn">🚀 ЗАПУСК ИДЕАЛЬНОЙ ИГРЫ</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Мега переменные
-        let scene, camera, renderer, player, environment = [];
-        let isGameActive = false;
-        let recognition = null;
-        let gameSpeed = 0.15;
-        let playerPos = { x: 0, y: 2, z: 0 };
-        let isVoiceActive = false;
-        let particles = [], lights = [], effects = [];
-        let lastCommand = '';
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        let scene, camera, renderer, player, world = [];
+        let gameActive = false;
+        let voiceRecognition = null;
+        let speed = 0.2;
+        let pos = { x: 0, y: 3, z: 0 };
+        let voiceActive = false;
+        let commandCount = 0;
+        let particleSystems = [], lightSources = [];
         
-        // КАРДИНАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ 3D МЕГА ГРАФИКИ
-        function initMegaGame() {
-            console.log('🚀 ИНИЦИАЛИЗАЦИЯ МЕГА ДВИЖКА...');
+        // ИНИЦИАЛИЗАЦИЯ СУПЕР 3D ДВИЖКА
+        function initSuperEngine() {
+            console.log('🚀 ЗАПУСК СУПЕР ДВИЖКА...');
             
-            // Сцена с мега настройками
+            // СОЗДАНИЕ СЦЕНЫ
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x000011);
-            scene.fog = new THREE.FogExp2(0x000033, 0.02);
+            scene.background = new THREE.Color(0x000022);
+            scene.fog = new THREE.FogExp2(0x000044, 0.015);
             
-            // Мега камера
-            camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1, 2000);
-            camera.position.set(0, 8, 15);
+            // СУПЕР КАМЕРА
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 10, 20);
             
-            // Супер рендерер с максимальными настройками
+            // МАКСИМАЛЬНЫЙ РЕНДЕРЕР
             renderer = new THREE.WebGLRenderer({ 
                 canvas: document.getElementById('gameCanvas'),
                 antialias: true,
-                alpha: false,
                 powerPreference: 'high-performance'
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.outputEncoding = THREE.sRGBEncoding;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
             
-            // МЕГА КРУТОЙ ИГРОК
-            createMegaPlayer();
-            
-            // НЕВЕРОЯТНОЕ ОКРУЖЕНИЕ
-            createMegaEnvironment();
-            
-            // СИСТЕМА МЕГА ОСВЕЩЕНИЯ
-            createMegaLighting();
-            
+            // СОЗДАНИЕ ИГРОКА
+            createSuperPlayer();
+            // СОЗДАНИЕ МИРА
+            createSuperWorld();
+            // СУПЕР ОСВЕЩЕНИЕ
+            createSuperLighting();
             // СИСТЕМА ЧАСТИЦ
-            createMegaParticles();
+            createSuperParticles();
             
-            console.log('✅ МЕГА ДВИЖОК ГОТОВ!');
+            console.log('✅ СУПЕР ДВИЖОК ГОТОВ!');
         }
         
-        function createMegaPlayer() {
-            // Мега геометрия игрока
-            const playerGeom = new THREE.IcosahedronGeometry(0.8, 2);
-            const playerMat = new THREE.MeshPhysicalMaterial({
+        function createSuperPlayer() {
+            // ГЕОМЕТРИЯ ИГРОКА
+            const geometry = new THREE.DodecahedronGeometry(1, 1);
+            const material = new THREE.MeshPhysicalMaterial({
                 color: 0x00ff88,
-                emissive: 0x002244,
-                metalness: 0.7,
+                emissive: 0x004422,
+                metalness: 0.8,
                 roughness: 0.2,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1
+                clearcoat: 1,
+                clearcoatRoughness: 0
             });
             
-            player = new THREE.Mesh(playerGeom, playerMat);
-            player.position.set(0, 2, 0);
+            player = new THREE.Mesh(geometry, material);
+            player.position.set(0, 3, 0);
             player.castShadow = true;
-            player.receiveShadow = true;
             scene.add(player);
             
-            // Мега аура вокруг игрока
-            const auraGeom = new THREE.SphereGeometry(1.5, 32, 32);
-            const auraMat = new THREE.MeshBasicMaterial({
-                color: 0x00ff88,
+            // АУРА ИГРОКА
+            const auraGeometry = new THREE.SphereGeometry(2, 16, 16);
+            const auraMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
                 transparent: true,
                 opacity: 0.1,
                 wireframe: true
             });
-            const aura = new THREE.Mesh(auraGeom, auraMat);
+            const aura = new THREE.Mesh(auraGeometry, auraMaterial);
             player.add(aura);
         }
         
-        function createMegaEnvironment() {
-            // Мега земля
-            const groundGeom = new THREE.PlaneGeometry(200, 200, 50, 50);
+        function createSuperWorld() {
+            // СУПЕР ЗЕМЛЯ
+            const groundGeo = new THREE.PlaneGeometry(300, 300, 100, 100);
             const groundMat = new THREE.MeshStandardMaterial({
-                color: 0x111133,
-                metalness: 0.3,
-                roughness: 0.8,
-                wireframe: false
+                color: 0x112244,
+                metalness: 0.1,
+                roughness: 0.9
             });
-            const ground = new THREE.Mesh(groundGeom, groundMat);
+            const ground = new THREE.Mesh(groundGeo, groundMat);
             ground.rotation.x = -Math.PI / 2;
             ground.receiveShadow = true;
             scene.add(ground);
             
-            // Мега кубы и формы
-            for (let i = 0; i < 30; i++) {
-                const shapes = [
-                    new THREE.BoxGeometry(2, 4, 2),
-                    new THREE.ConeGeometry(1, 4, 8),
-                    new THREE.CylinderGeometry(1, 1, 4, 12),
+            // ОБЪЕКТЫ МИРА
+            for (let i = 0; i < 50; i++) {
+                const geometries = [
+                    new THREE.BoxGeometry(2, 5, 2),
+                    new THREE.ConeGeometry(1.5, 6, 8),
+                    new THREE.CylinderGeometry(1, 1, 5, 12),
+                    new THREE.SphereGeometry(1.5, 16, 16),
                     new THREE.OctahedronGeometry(2)
                 ];
                 
-                const geom = shapes[Math.floor(Math.random() * shapes.length)];
+                const geo = geometries[Math.floor(Math.random() * geometries.length)];
                 const mat = new THREE.MeshStandardMaterial({
-                    color: new THREE.Color().setHSL(Math.random(), 0.8, 0.6),
-                    metalness: Math.random() * 0.8,
-                    roughness: Math.random() * 0.5,
-                    emissive: new THREE.Color().setHSL(Math.random(), 0.5, 0.1)
+                    color: new THREE.Color().setHSL(Math.random(), 0.9, 0.6),
+                    metalness: Math.random() * 0.5,
+                    roughness: Math.random() * 0.7,
+                    emissive: new THREE.Color().setHSL(Math.random(), 0.3, 0.05)
                 });
                 
-                const mesh = new THREE.Mesh(geom, mat);
+                const mesh = new THREE.Mesh(geo, mat);
                 mesh.position.set(
-                    (Math.random() - 0.5) * 80,
-                    2,
-                    (Math.random() - 0.5) * 80
+                    (Math.random() - 0.5) * 150,
+                    2.5,
+                    (Math.random() - 0.5) * 150
                 );
                 mesh.rotation.set(
                     Math.random() * Math.PI,
@@ -411,383 +371,396 @@
                 mesh.receiveShadow = true;
                 
                 scene.add(mesh);
-                environment.push(mesh);
+                world.push(mesh);
             }
         }
         
-        function createMegaLighting() {
-            // Основной свет
-            const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            mainLight.position.set(20, 30, 10);
+        function createSuperLighting() {
+            // ОСНОВНОЙ СВЕТ
+            const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            mainLight.position.set(30, 50, 20);
             mainLight.castShadow = true;
-            mainLight.shadow.mapSize.width = 2048;
-            mainLight.shadow.mapSize.height = 2048;
+            mainLight.shadow.mapSize.width = 4096;
+            mainLight.shadow.mapSize.height = 4096;
             scene.add(mainLight);
             
-            // Цветные огни
-            const colors = [0xff0080, 0x0080ff, 0x80ff00, 0xff8000];
-            for (let i = 0; i < 8; i++) {
-                const light = new THREE.PointLight(colors[i % colors.length], 1, 30);
+            // ЦВЕТНЫЕ ОГНИ
+            const colors = [0xff0080, 0x0080ff, 0x80ff00, 0xff8000, 0x8000ff, 0x00ff80];
+            for (let i = 0; i < 12; i++) {
+                const light = new THREE.PointLight(colors[i % colors.length], 2, 40);
                 light.position.set(
-                    (Math.random() - 0.5) * 60,
-                    5 + Math.random() * 15,
-                    (Math.random() - 0.5) * 60
+                    (Math.random() - 0.5) * 100,
+                    8 + Math.random() * 20,
+                    (Math.random() - 0.5) * 100
                 );
                 scene.add(light);
-                lights.push(light);
+                lightSources.push(light);
             }
             
-            // Окружающий свет
-            const ambientLight = new THREE.AmbientLight(0x404080, 0.4);
+            // ОКРУЖАЮЩИЙ СВЕТ
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.6);
             scene.add(ambientLight);
         }
         
-        function createMegaParticles() {
-            // Система мега частиц
-            const particleCount = 2000;
+        function createSuperParticles() {
+            // СИСТЕМА СУПЕР ЧАСТИЦ
+            const particleCount = 3000;
             const positions = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
             
             for (let i = 0; i < particleCount; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 200;
-                positions[i * 3 + 1] = Math.random() * 100;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+                positions[i * 3] = (Math.random() - 0.5) * 400;
+                positions[i * 3 + 1] = Math.random() * 150;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 400;
                 
-                const color = new THREE.Color().setHSL(Math.random(), 1, 0.5);
+                const color = new THREE.Color().setHSL(Math.random(), 1, 0.7);
                 colors[i * 3] = color.r;
                 colors[i * 3 + 1] = color.g;
                 colors[i * 3 + 2] = color.b;
+                
+                sizes[i] = Math.random() * 3 + 1;
             }
             
-            const particleGeom = new THREE.BufferGeometry();
-            particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particleGeom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const particleGeo = new THREE.BufferGeometry();
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particleGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
             
             const particleMat = new THREE.PointsMaterial({
-                size: 0.3,
+                size: 2,
                 vertexColors: true,
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.9,
                 blending: THREE.AdditiveBlending
             });
             
-            const particleSystem = new THREE.Points(particleGeom, particleMat);
-            scene.add(particleSystem);
-            particles.push(particleSystem);
+            const particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+            particleSystems.push(particles);
         }
         
-        // АВТОМАТИЧЕСКАЯ АКТИВАЦИЯ ГОЛОСОВОГО УПРАВЛЕНИЯ
-        function forceVoiceActivation() {
-            console.log('🔥 ПРИНУДИТЕЛЬНАЯ АКТИВАЦИЯ ГОЛОСА...');
+        // МГНОВЕННОЕ ГОЛОСОВОЕ УПРАВЛЕНИЕ
+        function initInstantVoice() {
+            console.log('🎤 ИНИЦИАЛИЗАЦИЯ МГНОВЕННОГО ГОЛОСА...');
             
-            // Множественная инициализация для гарантированной работы
             if ('webkitSpeechRecognition' in window) {
-                recognition = new webkitSpeechRecognition();
+                voiceRecognition = new webkitSpeechRecognition();
             } else if ('SpeechRecognition' in window) {
-                recognition = new SpeechRecognition();
+                voiceRecognition = new SpeechRecognition();
             } else {
                 console.error('❌ Голосовое управление не поддерживается');
-                document.getElementById('voiceReady').textContent = 'НЕ ПОДДЕРЖИВАЕТСЯ';
                 return false;
             }
             
-            // Мега настройки распознавания
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.lang = 'ru-RU';
-            recognition.maxAlternatives = 1;
+            // СУПЕР НАСТРОЙКИ ДЛЯ МГНОВЕННОГО ОТКЛИКА
+            voiceRecognition.continuous = true;
+            voiceRecognition.interimResults = true; // ВАЖНО ДЛЯ СКОРОСТИ!
+            voiceRecognition.lang = 'ru-RU';
+            voiceRecognition.maxAlternatives = 1;
             
-            // Обработчики событий
-            recognition.onstart = () => {
-                isVoiceActive = true;
+            voiceRecognition.onstart = () => {
+                voiceActive = true;
                 document.getElementById('voiceStatus').innerHTML = '🎤 ГОЛОС: 🟢 АКТИВЕН';
-                document.getElementById('voiceStatus').style.background = 'linear-gradient(45deg, rgba(0,255,0,0.9), rgba(0,200,100,0.8))';
-                document.getElementById('voiceReady').textContent = 'АКТИВЕН';
-                console.log('✅ ГОЛОСОВОЕ УПРАВЛЕНИЕ АКТИВИРОВАНО!');
+                document.getElementById('voiceStatus').style.background = 'linear-gradient(45deg, #00ff00, #44ff44)';
+                console.log('✅ ГОЛОС АКТИВЕН!');
             };
             
-            recognition.onresult = (event) => {
+            voiceRecognition.onresult = (event) => {
+                // ОБРАБОТКА И ПРОМЕЖУТОЧНЫХ И ФИНАЛЬНЫХ РЕЗУЛЬТАТОВ
                 for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        const command = event.results[i][0].transcript.toLowerCase().trim();
-                        console.log('🎤 КОМАНДА:', command);
-                        processMegaCommand(command);
+                    const transcript = event.results[i][0].transcript.toLowerCase().trim();
+                    
+                    // МГНОВЕННАЯ ОБРАБОТКА ДАЖЕ ПРОМЕЖУТОЧНЫХ РЕЗУЛЬТАТОВ
+                    if (transcript.length > 1) {
+                        processInstantCommand(transcript);
                     }
                 }
             };
             
-            recognition.onerror = (event) => {
-                console.log('⚠️ Ошибка распознавания:', event.error);
-                if (event.error === 'not-allowed') {
-                    document.getElementById('forceActivation').classList.remove('hidden');
-                }
-                // Автоперезапуск при ошибках
+            voiceRecognition.onerror = (event) => {
+                console.log('⚠️ Ошибка:', event.error);
+                // МГНОВЕННЫЙ ПЕРЕЗАПУСК
                 setTimeout(() => {
-                    if (isGameActive && !isVoiceActive) {
-                        recognition.start();
+                    if (gameActive) {
+                        try {
+                            voiceRecognition.start();
+                        } catch (e) {}
                     }
-                }, 1000);
+                }, 100);
             };
             
-            recognition.onend = () => {
-                if (isGameActive) {
-                    // Автоматический перезапуск
+            voiceRecognition.onend = () => {
+                if (gameActive) {
+                    // МГНОВЕННЫЙ ПЕРЕЗАПУСК БЕЗ ЗАДЕРЖЕК
                     setTimeout(() => {
                         try {
-                            recognition.start();
-                        } catch (e) {
-                            console.log('Перезапуск через 500мс...');
-                            setTimeout(() => recognition.start(), 500);
-                        }
-                    }, 100);
+                            voiceRecognition.start();
+                        } catch (e) {}
+                    }, 50);
                 }
             };
             
-            // Принудительный запуск
+            // ЗАПУСК
             try {
-                recognition.start();
-                console.log('🚀 ЗАПУСК РАСПОЗНАВАНИЯ...');
+                voiceRecognition.start();
                 return true;
             } catch (error) {
-                console.error('❌ ОШИБКА ЗАПУСКА:', error);
-                document.getElementById('forceActivation').classList.remove('hidden');
+                console.error('❌ Ошибка запуска:', error);
                 return false;
             }
         }
         
-        // ОБРАБОТКА МЕГА КОМАНД
-        function processMegaCommand(command) {
-            lastCommand = command;
-            console.log('⚡ ОБРАБОТКА:', command);
+        // ОБРАБОТКА МГНОВЕННЫХ КОМАНД
+        function processInstantCommand(cmd) {
+            commandCount++;
+            console.log('⚡ МГНОВЕННАЯ КОМАНДА:', cmd);
             
-            // Мультивариантные команды для надежности
-            if (command.includes('вперед') || command.includes('вперёд') || command.includes('forward')) {
-                movePlayerMega(0, 0, -gameSpeed * 2);
-                createMovementEffect();
-            } else if (command.includes('назад') || command.includes('back')) {
-                movePlayerMega(0, 0, gameSpeed * 2);
-                createMovementEffect();
-            } else if (command.includes('влево') || command.includes('лево') || command.includes('left')) {
-                movePlayerMega(-gameSpeed * 2, 0, 0);
-                createMovementEffect();
-            } else if (command.includes('вправо') || command.includes('право') || command.includes('right')) {
-                movePlayerMega(gameSpeed * 2, 0, 0);
-                createMovementEffect();
-            } else if (command.includes('вверх') || command.includes('верх') || command.includes('up')) {
-                movePlayerMega(0, gameSpeed * 1.5, 0);
+            // СУПЕР ПРОСТЫЕ КОМАНДЫ ДЛЯ 100% РАСПОЗНАВАНИЯ
+            if (cmd.includes('гоу') || cmd.includes('вперед') || cmd.includes('го')) {
+                movePlayerInstant(0, 0, -speed * 3);
+                showResponse('ВПЕРЕД!');
+            } 
+            else if (cmd.includes('бэк') || cmd.includes('назад') || cmd.includes('бек')) {
+                movePlayerInstant(0, 0, speed * 3);
+                showResponse('НАЗАД!');
+            } 
+            else if (cmd.includes('лево') || cmd.includes('влево')) {
+                movePlayerInstant(-speed * 3, 0, 0);
+                showResponse('ВЛЕВО!');
+            } 
+            else if (cmd.includes('право') || cmd.includes('вправо')) {
+                movePlayerInstant(speed * 3, 0, 0);
+                showResponse('ВПРАВО!');
+            } 
+            else if (cmd.includes('ап') || cmd.includes('вверх') || cmd.includes('верх')) {
+                movePlayerInstant(0, speed * 2, 0);
+                showResponse('ВВЕРХ!');
                 createLiftEffect();
-            } else if (command.includes('вниз') || command.includes('низ') || command.includes('down')) {
-                movePlayerMega(0, -gameSpeed * 1.5, 0);
-                createLandEffect();
-            } else if (command.includes('ускорение') || command.includes('быстрее') || command.includes('speed')) {
-                gameSpeed = Math.min(gameSpeed * 1.8, 2.0);
+            } 
+            else if (cmd.includes('даун') || cmd.includes('вниз') || cmd.includes('низ')) {
+                movePlayerInstant(0, -speed * 2, 0);
+                showResponse('ВНИЗ!');
+            } 
+            else if (cmd.includes('фаст') || cmd.includes('быстро') || cmd.includes('ускор')) {
+                speed = Math.min(speed * 1.5, 3.0);
+                showResponse('УСКОРЕНИЕ!');
                 createSpeedEffect();
-            } else if (command.includes('медленно') || command.includes('медленнее') || command.includes('slow')) {
-                gameSpeed = Math.max(gameSpeed * 0.6, 0.05);
-            } else if (command.includes('стоп') || command.includes('стой') || command.includes('stop')) {
-                gameSpeed = 0;
-                setTimeout(() => gameSpeed = 0.15, 2000);
-                createStopEffect();
-            } else if (command.includes('взрыв') || command.includes('эффект') || command.includes('effect')) {
-                createMegaExplosion();
-            } else if (command.includes('цвет') || command.includes('color')) {
+            } 
+            else if (cmd.includes('слоу') || cmd.includes('медленно') || cmd.includes('тихо')) {
+                speed = Math.max(speed * 0.7, 0.1);
+                showResponse('ЗАМЕДЛЕНИЕ!');
+            } 
+            else if (cmd.includes('стоп') || cmd.includes('стой')) {
+                speed = 0;
+                setTimeout(() => speed = 0.2, 2000);
+                showResponse('СТОП!');
+            } 
+            else if (cmd.includes('бум') || cmd.includes('взрыв') || cmd.includes('эффект')) {
+                createInstantExplosion();
+                showResponse('ВЗРЫВ!');
+            } 
+            else if (cmd.includes('колор') || cmd.includes('цвет')) {
                 changePlayerColor();
-            } else if (command.includes('молния') || command.includes('lightning')) {
+                showResponse('ЦВЕТ!');
+            } 
+            else if (cmd.includes('флаш') || cmd.includes('молния') || cmd.includes('flash')) {
                 createLightningEffect();
+                showResponse('МОЛНИЯ!');
             }
             
-            updateMegaUI();
+            updateStats();
         }
         
-        function movePlayerMega(deltaX, deltaY, deltaZ) {
+        function movePlayerInstant(dx, dy, dz) {
             if (!player) return;
             
-            player.position.x += deltaX;
-            player.position.y = Math.max(0.8, player.position.y + deltaY);
-            player.position.z += deltaZ;
+            player.position.x += dx;
+            player.position.y = Math.max(1, player.position.y + dy);
+            player.position.z += dz;
             
-            // Границы мира
-            player.position.x = Math.max(-90, Math.min(90, player.position.x));
-            player.position.z = Math.max(-90, Math.min(90, player.position.z));
+            // ГРАНИЦЫ
+            player.position.x = Math.max(-140, Math.min(140, player.position.x));
+            player.position.z = Math.max(-140, Math.min(140, player.position.z));
             
-            // Плавное следование камеры
+            // МГНОВЕННОЕ СЛЕДОВАНИЕ КАМЕРЫ
             camera.position.x = player.position.x;
-            camera.position.y = player.position.y + 8;
-            camera.position.z = player.position.z + 15;
+            camera.position.y = player.position.y + 10;
+            camera.position.z = player.position.z + 20;
             camera.lookAt(player.position);
             
-            playerPos = {
-                x: player.position.x.toFixed(2),
-                y: player.position.y.toFixed(2),
-                z: player.position.z.toFixed(2)
+            pos = {
+                x: player.position.x.toFixed(1),
+                y: player.position.y.toFixed(1),
+                z: player.position.z.toFixed(1)
             };
         }
         
-        function createMovementEffect() {
-            // Эффект движения
-            const trailGeom = new THREE.ConeGeometry(0.2, 2, 8);
-            const trailMat = new THREE.MeshBasicMaterial({
-                color: 0x00ff88,
-                transparent: true,
-                opacity: 0.7
-            });
-            const trail = new THREE.Mesh(trailGeom, trailMat);
-            trail.position.copy(player.position);
-            trail.position.y -= 1;
-            scene.add(trail);
-            
-            setTimeout(() => scene.remove(trail), 500);
+        function showResponse(text) {
+            const indicator = document.getElementById('responseIndicator');
+            indicator.innerHTML = `⚡ ${text}`;
+            indicator.style.background = 'linear-gradient(45deg, #ff0080, #00ff80)';
+            setTimeout(() => {
+                indicator.innerHTML = '⚡ МГНОВЕННЫЙ ОТКЛИК';
+                indicator.style.background = 'linear-gradient(45deg, #00ff00, #44ff44)';
+            }, 1000);
         }
         
-        function createMegaExplosion() {
-            console.log('💥 МЕГА ВЗРЫВ!');
-            
-            for (let i = 0; i < 100; i++) {
-                const sparkGeom = new THREE.SphereGeometry(0.1, 6, 6);
-                const sparkMat = new THREE.MeshBasicMaterial({
-                    color: new THREE.Color().setHSL(Math.random(), 1, 0.6)
+        function createInstantExplosion() {
+            for (let i = 0; i < 80; i++) {
+                const geo = new THREE.SphereGeometry(0.2, 6, 6);
+                const mat = new THREE.MeshBasicMaterial({
+                    color: new THREE.Color().setHSL(Math.random(), 1, 0.8)
                 });
-                const spark = new THREE.Mesh(sparkGeom, sparkMat);
+                const spark = new THREE.Mesh(geo, mat);
                 
                 spark.position.copy(player.position);
-                spark.userData.velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 5,
-                    Math.random() * 5,
-                    (Math.random() - 0.5) * 5
+                spark.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 8,
+                    Math.random() * 8,
+                    (Math.random() - 0.5) * 8
                 );
                 
                 scene.add(spark);
-                effects.push(spark);
                 
-                setTimeout(() => {
-                    scene.remove(spark);
-                    effects.splice(effects.indexOf(spark), 1);
-                }, 3000);
+                setTimeout(() => scene.remove(spark), 2000);
             }
         }
         
         function changePlayerColor() {
             if (player && player.material) {
-                const newColor = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
-                player.material.color = newColor;
-                player.material.emissive.setHSL(Math.random(), 0.5, 0.2);
+                const hue = Math.random();
+                player.material.color.setHSL(hue, 0.9, 0.6);
+                player.material.emissive.setHSL(hue, 0.5, 0.1);
+            }
+        }
+        
+        function createLiftEffect() {
+            const ringGeo = new THREE.TorusGeometry(3, 0.5, 8, 16);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                transparent: true,
+                opacity: 0.8
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.position.copy(player.position);
+            ring.position.y -= 1;
+            scene.add(ring);
+            
+            setTimeout(() => scene.remove(ring), 1000);
+        }
+        
+        function createSpeedEffect() {
+            for (let i = 0; i < 20; i++) {
+                const trailGeo = new THREE.ConeGeometry(0.1, 3, 4);
+                const trailMat = new THREE.MeshBasicMaterial({
+                    color: 0xffff00,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const trail = new THREE.Mesh(trailGeo, trailMat);
+                trail.position.copy(player.position);
+                trail.position.add(new THREE.Vector3(
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2
+                ));
+                scene.add(trail);
+                
+                setTimeout(() => scene.remove(trail), 800);
             }
         }
         
         function createLightningEffect() {
-            // Эффект молнии
-            const lightningGeom = new THREE.CylinderGeometry(0.05, 0.05, 20, 8);
+            const lightningGeo = new THREE.CylinderGeometry(0.1, 0.1, 25, 8);
             const lightningMat = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
                 transparent: true,
-                opacity: 0.9
+                opacity: 1
             });
-            const lightning = new THREE.Mesh(lightningGeom, lightningMat);
+            const lightning = new THREE.Mesh(lightningGeo, lightningMat);
             lightning.position.copy(player.position);
-            lightning.position.y += 10;
+            lightning.position.y += 12;
             scene.add(lightning);
             
-            setTimeout(() => scene.remove(lightning), 200);
+            setTimeout(() => scene.remove(lightning), 300);
         }
         
-        function updateMegaUI() {
-            document.getElementById('speed').textContent = gameSpeed.toFixed(3);
-            document.getElementById('posX').textContent = playerPos.x;
-            document.getElementById('posY').textContent = playerPos.y;
-            document.getElementById('posZ').textContent = playerPos.z;
+        function updateStats() {
+            document.getElementById('speedVal').textContent = speed.toFixed(2);
+            document.getElementById('xPos').textContent = pos.x;
+            document.getElementById('yPos').textContent = pos.y;
+            document.getElementById('zPos').textContent = pos.z;
+            document.getElementById('cmdCount').textContent = commandCount;
         }
         
-        // МЕГА ИГРОВОЙ ЦИКЛ
-        function megaGameLoop() {
-            if (!isGameActive) return;
+        // СУПЕР ИГРОВОЙ ЦИКЛ
+        function superGameLoop() {
+            if (!gameActive) return;
             
-            requestAnimationFrame(megaGameLoop);
+            requestAnimationFrame(superGameLoop);
             
             const time = Date.now() * 0.001;
             
-            // Анимация игрока
+            // АНИМАЦИЯ ИГРОКА
             if (player) {
-                player.rotation.y += 0.02;
-                player.rotation.x = Math.sin(time) * 0.1;
-                player.position.y += Math.sin(time * 2) * 0.01;
+                player.rotation.y += 0.03;
+                player.rotation.x = Math.sin(time * 2) * 0.15;
+                player.position.y += Math.sin(time * 4) * 0.02;
                 
-                // Пульсация ауры
+                // АНИМАЦИЯ АУРЫ
                 if (player.children[0]) {
-                    player.children[0].rotation.y -= 0.03;
-                    player.children[0].scale.setScalar(1 + Math.sin(time * 3) * 0.1);
+                    player.children[0].rotation.y -= 0.05;
+                    player.children[0].scale.setScalar(1 + Math.sin(time * 5) * 0.2);
                 }
             }
             
-            // Анимация частиц
-            particles.forEach(particleSystem => {
-                particleSystem.rotation.y += 0.005;
-                particleSystem.rotation.x += 0.002;
+            // АНИМАЦИЯ ЧАСТИЦ
+            particleSystems.forEach(system => {
+                system.rotation.y += 0.008;
+                system.rotation.x += 0.004;
             });
             
-            // Анимация освещения
-            lights.forEach((light, index) => {
-                light.intensity = 1 + Math.sin(time + index) * 0.5;
-                light.position.y += Math.sin(time * 2 + index) * 0.02;
+            // АНИМАЦИЯ ОСВЕЩЕНИЯ
+            lightSources.forEach((light, i) => {
+                light.intensity = 2 + Math.sin(time * 3 + i) * 0.8;
+                light.position.y += Math.sin(time * 2 + i) * 0.05;
             });
             
-            // Анимация окружения
-            environment.forEach((obj, index) => {
-                obj.rotation.y += 0.01 + index * 0.001;
-                obj.rotation.x += 0.005;
-                obj.position.y = 2 + Math.sin(time + index) * 0.5;
-            });
-            
-            // Анимация эффектов
-            effects.forEach(effect => {
-                if (effect.userData.velocity) {
-                    effect.position.add(effect.userData.velocity.clone().multiplyScalar(0.1));
-                    effect.userData.velocity.y -= 0.01; // гравитация
-                    effect.material.opacity *= 0.99;
-                }
+            // АНИМАЦИЯ МИРА
+            world.forEach((obj, i) => {
+                obj.rotation.y += 0.015 + i * 0.001;
+                obj.rotation.x += 0.008;
+                obj.position.y = 2.5 + Math.sin(time * 1.5 + i) * 0.8;
             });
             
             renderer.render(scene, camera);
         }
         
-        // АВТОЗАПУСК ИГРЫ
-        function autoStartMegaGame() {
-            console.log('🚀 АВТОЗАПУСК МЕГА ИГРЫ...');
+        // ЗАПУСК ИДЕАЛЬНОЙ ИГРЫ
+        function startPerfectGame() {
+            console.log('🚀 ЗАПУСК ИДЕАЛЬНОЙ ИГРЫ...');
             
-            isGameActive = true;
-            document.getElementById('autoStart').classList.add('hidden');
+            gameActive = true;
+            document.getElementById('startBtn').classList.add('hidden');
             
-            // Инициализация 3D
-            initMegaGame();
+            // ИНИЦИАЛИЗАЦИЯ
+            initSuperEngine();
             
-            // Принудительная активация голоса
+            // ЗАПУСК ГОЛОСА С ЗАДЕРЖКОЙ
             setTimeout(() => {
-                forceVoiceActivation();
-            }, 500);
+                initInstantVoice();
+            }, 1000);
             
-            // Запуск игрового цикла
-            megaGameLoop();
-            updateMegaUI();
+            // ЗАПУСК ИГРОВОГО ЦИКЛА
+            superGameLoop();
+            updateStats();
             
-            // Создание UI частиц
-            createUIParticles();
-            
-            console.log('✅ МЕГА ИГРА ЗАПУЩЕНА!');
+            console.log('✅ ИДЕАЛЬНАЯ ИГРА ЗАПУЩЕНА!');
         }
         
-        function createUIParticles() {
-            // Создание частиц в UI
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'ui-particle';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = Math.random() * window.innerHeight + 'px';
-                particle.style.animationDelay = Math.random() * 4 + 's';
-                document.getElementById('ui').appendChild(particle);
-            }
-        }
-        
-        // Обработка изменения размера
-        function onWindowResize() {
+        // ОБРАБОТКА ИЗМЕНЕНИЯ РАЗМЕРА
+        function onResize() {
             if (camera && renderer) {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
@@ -795,36 +768,24 @@
             }
         }
         
-        // События
-        document.getElementById('autoStart').addEventListener('click', autoStartMegaGame);
-        document.getElementById('forceActivation').addEventListener('click', () => {
-            forceVoiceActivation();
-            document.getElementById('forceActivation').classList.add('hidden');
-        });
-        window.addEventListener('resize', onWindowResize);
+        // СОБЫТИЯ
+        document.getElementById('startBtn').addEventListener('click', startPerfectGame);
+        window.addEventListener('resize', onResize);
         
-        // Автоинициализация при загрузке
+        // АВТОИНИЦИАЛИЗАЦИЯ
         window.addEventListener('load', () => {
-            console.log('🌟 МЕГА СИСТЕМА ГОТОВА К ЗАПУСКУ!');
-            console.log('🎮 Нажмите кнопку для автозапуска с голосовым управлением!');
-            
-            // Предзагрузка для мобильных устройств
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                document.getElementById('voiceStatus').innerHTML = '📱 МОБИЛЬНАЯ ВЕРСИЯ ГОТОВА';
-            }
+            console.log('🌟 ИДЕАЛЬНАЯ СИСТЕМА ГОТОВА!');
         });
         
-        // Дополнительная система безопасности для голосового управления
+        // СИСТЕМА АВТОПЕРЕЗАПУСКА ГОЛОСА
         setInterval(() => {
-            if (isGameActive && !isVoiceActive && recognition) {
-                console.log('🔄 АВТОПЕРЕЗАПУСК ГОЛОСОВОГО УПРАВЛЕНИЯ...');
+            if (gameActive && !voiceActive && voiceRecognition) {
+                console.log('🔄 ПЕРЕЗАПУСК ГОЛОСА...');
                 try {
-                    recognition.start();
-                } catch (e) {
-                    console.log('Ожидание перезапуска...');
-                }
+                    voiceRecognition.start();
+                } catch (e) {}
             }
-        }, 3000);
+        }, 2000);
     </script>
 </body>
 </html>
