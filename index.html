@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Guardian 3D - Революционная игра с голосовым управлением</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <title>МЕГА 3D Игра с Голосовым Управлением</title>
     <style>
         * {
             margin: 0;
@@ -13,921 +12,1391 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(ellipse at center, #0f0f23 0%, #0a0a1a 100%);
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            color: white;
+            background: #000;
             position: relative;
         }
 
         #gameCanvas {
             display: block;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(45deg, #0a0a2e, #16213e, #0f0f23);
         }
 
-        .hud {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .top-hud {
+        #voiceUI {
             position: absolute;
             top: 20px;
             left: 20px;
-            right: 20px;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(50, 0, 100, 0.8));
+            padding: 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 0, 255, 0.8);
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.6), inset 0 0 30px rgba(0, 255, 255, 0.3);
+            z-index: 100;
+            max-width: 350px;
+            animation: uiGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes uiGlow {
+            from { box-shadow: 0 0 50px rgba(255, 0, 255, 0.6), inset 0 0 30px rgba(0, 255, 255, 0.3); }
+            to { box-shadow: 0 0 80px rgba(0, 255, 255, 0.8), inset 0 0 50px rgba(255, 0, 255, 0.4); }
+        }
+
+        #voiceStatus {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .health-bar, .mana-bar {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            padding: 10px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        .bar-fill {
-            height: 20px;
-            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
-            border-radius: 5px;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px currentColor;
-        }
-
-        .mana-fill {
-            background: linear-gradient(90deg, #0066ff, #00ccff);
-        }
-
-        .voice-status {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid #00ffff;
-            text-align: center;
-            min-width: 300px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
 
         .voice-indicator {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: radial-gradient(circle, #ff0066, #0066ff);
-            margin: 0 auto 10px;
-            animation: pulse 1.5s infinite;
+            margin-right: 15px;
+            background: radial-gradient(circle, #ff0000, #880000);
+            box-shadow: 0 0 30px #ff0000;
+            animation: pulse 2s infinite;
         }
 
-        .voice-indicator.listening {
-            animation: listening 0.5s infinite alternate;
-            box-shadow: 0 0 30px rgba(255, 0, 102, 0.8);
+        .voice-indicator.active {
+            background: radial-gradient(circle, #00ff00, #008800);
+            box-shadow: 0 0 50px #00ff00, 0 0 100px #00ff00;
+            animation: activePulse 0.3s infinite;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.7; }
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        @keyframes listening {
-            0% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
-            100% { transform: scale(1.2); box-shadow: 0 0 40px rgba(0, 255, 255, 1); }
+        @keyframes activePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
         }
 
-        .commands-help {
+        #commandDisplay {
+            font-size: 18px;
+            color: #00ffff;
+            margin-top: 15px;
+            min-height: 25px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            font-weight: bold;
+        }
+
+        #commands {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .command-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 10px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .command-item:hover {
+            background: linear-gradient(90deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3));
+            transform: translateX(10px) scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .command-key {
+            color: #00ff88;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+        }
+
+        #startButton {
             position: absolute;
             top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #00ffff;
-            backdrop-filter: blur(10px);
-            max-width: 250px;
-        }
-
-        .command-category {
-            margin-bottom: 15px;
-        }
-
-        .command-category h4 {
-            color: #00ffff;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .command-list {
-            font-size: 12px;
-            line-height: 1.4;
-            color: #cccccc;
-        }
-
-        .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, rgba(15, 15, 35, 0.95), rgba(10, 10, 26, 0.95));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .start-title {
-            font-size: 4em;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px 60px;
+            font-size: 32px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 200;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             font-weight: bold;
-            background: linear-gradient(45deg, #ff0066, #00ffff, #66ff00);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 3s ease-in-out infinite;
-            margin-bottom: 20px;
-            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.8), 0 0 100px rgba(0, 255, 255, 0.5);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
 
-        @keyframes gradient-shift {
+        @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        .start-subtitle {
-            font-size: 1.5em;
-            color: #cccccc;
-            margin-bottom: 40px;
-            text-align: center;
+        #startButton:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 0 80px rgba(255, 0, 255, 1), 0 0 150px rgba(0, 255, 255, 0.8);
         }
 
-        .start-btn {
-            background: linear-gradient(45deg, #ff0066, #0066ff);
-            border: none;
-            padding: 20px 40px;
-            font-size: 1.2em;
+        #score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(255, 0, 102, 0.5);
-            pointer-events: auto;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.8), 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(100, 0, 100, 0.5));
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 0, 0.5);
         }
 
-        .start-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 50px rgba(255, 0, 102, 0.8);
-        }
-
-        .game-info {
+        #healthBar {
             position: absolute;
-            top: 120px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #00ffff;
-            backdrop-filter: blur(10px);
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 40px;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.9), rgba(50, 0, 0, 0.9));
+            border: 3px solid #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
-        .particles {
+        #healthFill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff6600, #ffff00);
+            transition: width 0.3s;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(255, 100, 0, 0.8);
+        }
+
+        #fpsCounter {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #00ffff;
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-            pointer-events: none;
+            top: 80px;
+            right: 20px;
+            color: #00ff00;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            z-index: 100;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
-            33% { transform: translateY(-20px) rotate(120deg); opacity: 0.8; }
-            66% { transform: translateY(-10px) rotate(240deg); opacity: 0.6; }
-        }
-
-        .hidden { display: none !important; }
 
         @media (max-width: 768px) {
-            .commands-help {
-                display: none;
+            #voiceUI {
+                max-width: 250px;
+                padding: 15px;
             }
-            .start-title {
-                font-size: 2.5em;
+
+            #commands {
+                font-size: 12px;
             }
-            .top-hud {
-                flex-direction: column;
-                align-items: flex-start;
+
+            #startButton {
+                padding: 20px 40px;
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Стартовый экран -->
-    <div id="startScreen" class="start-screen">
-        <h1 class="start-title">VOICE GUARDIAN 3D</h1>
-        <p class="start-subtitle">Революционная игра с голосовым управлением</p>
-        <button id="startBtn" class="start-btn">🎤 НАЧАТЬ ИГРУ</button>
-        <div id="micStatus" style="margin-top: 20px; color: #ff6666;"></div>
-    </div>
-
-    <!-- Основной игровой контейнер -->
     <canvas id="gameCanvas"></canvas>
-
-    <!-- HUD интерфейс -->
-    <div id="gameHUD" class="hud hidden">
-        <div class="top-hud">
-            <div class="health-bar">
-                <div>💖 Здоровье: <span id="healthText">100</span>/100</div>
-                <div class="bar-fill" id="healthBar" style="width: 100%;"></div>
-            </div>
-            <div class="mana-bar">
-                <div>✨ Мана: <span id="manaText">100</span>/100</div>
-                <div class="bar-fill mana-fill" id="manaBar" style="width: 100%;"></div>
-            </div>
-        </div>
-
-        <div class="game-info">
-            <div>🏆 Уровень: <span id="levelText">1</span></div>
-            <div>⭐ Очки: <span id="scoreText">0</span></div>
-            <div>🎯 Враги: <span id="enemiesText">5</span></div>
-        </div>
-
-        <div class="voice-status">
+    
+    <div id="voiceUI">
+        <div id="voiceStatus">
             <div class="voice-indicator" id="voiceIndicator"></div>
-            <div id="voiceText">Скажи команду...</div>
-            <div id="lastCommand" style="color: #00ffff; margin-top: 5px;"></div>
+            <span>ГОЛОСОВОЕ УПРАВЛЕНИЕ</span>
         </div>
-
-        <div class="commands-help">
-            <div class="command-category">
-                <h4>🏃 ДВИЖЕНИЕ</h4>
-                <div class="command-list">
-                    "вперед" / "назад"<br>
-                    "лево" / "право"<br>
-                    "беги" / "стоп"<br>
-                    "прыжок"
-                </div>
+        <div id="commandDisplay">Скажите команду...</div>
+        <div id="commands">
+            <div class="command-item">
+                <span class="command-key">ВПЕРЁД / ИДИ</span>
+                <span>Движение вперёд</span>
             </div>
-            <div class="command-category">
-                <h4>⚔️ АТАКА</h4>
-                <div class="command-list">
-                    "атака" / "удар"<br>
-                    "магия" / "заклинание"<br>
-                    "щит" / "защита"<br>
-                    "комбо" / "ульта"
-                </div>
+            <div class="command-item">
+                <span class="command-key">НАЗАД</span>
+                <span>Движение назад</span>
             </div>
-            <div class="command-category">
-                <h4>🎮 ДЕЙСТВИЯ</h4>
-                <div class="command-list">
-                    "взять" / "открыть"<br>
-                    "меню" / "пауза"<br>
-                    "камера вверх/вниз"<br>
-                    "помощь"
-                </div>
+            <div class="command-item">
+                <span class="command-key">ВЛЕВО / ЛЕВО</span>
+                <span>Поворот влево</span>
+            </div>
+            <div class="command-item">
+                <span class="command-key">ВПРАВО / ПРАВО</span>
+                <span>Поворот вправо</span>
+            </div>
+            <div class="command-item">
+                <span class="command-key">ПРЫЖОК / ПРЫГАЙ</span>
+                <span>Прыжок</span>
+            </div>
+            <div class="command-item">
+                <span class="command-key">АТАКА / ОГОНЬ / БЕЙ</span>
+                <span>Атаковать</span>
+            </div>
+            <div class="command-item">
+                <span class="command-key">СТОП / СТОЙ</span>
+                <span>Остановиться</span>
+            </div>
+            <div class="command-item">
+                <span class="command-key">ТУРБО / БЫСТРО</span>
+                <span>Ускорение</span>
             </div>
         </div>
     </div>
 
+    <div id="score">Очки: 0</div>
+    <div id="fpsCounter">FPS: 60</div>
+    
+    <div id="healthBar">
+        <div id="healthFill"></div>
+    </div>
+
+    <button id="startButton">ЗАПУСТИТЬ ИГРУ</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        class VoiceGuardian3D {
-            constructor() {
-                this.scene = null;
-                this.camera = null;
-                this.renderer = null;
-                this.player = null;
-                this.enemies = [];
-                this.particles = [];
-                this.recognition = null;
-                this.isListening = false;
-                this.gameStarted = false;
-
-                // Игровое состояние
-                this.gameState = {
-                    health: 100,
-                    mana: 100,
-                    level: 1,
-                    score: 0,
-                    enemies: 5
+        // Game variables
+        let scene, camera, renderer, composer;
+        let player, playerModel, enemies = [], projectiles = [], collectibles = [], particles = [];
+        let score = 0;
+        let health = 100;
+        let gameStarted = false;
+        let clock = new THREE.Clock();
+        let frameCount = 0;
+        let fps = 60;
+        let lastTime = performance.now();
+        
+        // Materials and textures
+        let materials = {};
+        
+        // Voice recognition
+        let recognition;
+        let isListening = false;
+        
+        // Player movement
+        let moveForward = false;
+        let moveBackward = false;
+        let moveLeft = false;
+        let moveRight = false;
+        let turboMode = false;
+        let canJump = true;
+        let velocity = new THREE.Vector3();
+        let playerRotation = 0;
+        
+        // Post-processing effects
+        let bloomPass, glitchPass;
+        
+        // Initialize Three.js with enhanced graphics
+        function init() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000033, 0.005);
+            
+            // High-quality camera setup
+            camera = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                2000
+            );
+            camera.position.set(0, 8, 15);
+            
+            // High-quality renderer
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: document.getElementById('gameCanvas'),
+                antialias: true,
+                alpha: false,
+                powerPreference: "high-performance"
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            
+            setupLighting();
+            createMaterials();
+            createEnvironment();
+            createPlayer();
+            createEnemies();
+            createCollectibles();
+            createParticleSystem();
+            createSkybox();
+        }
+        
+        function setupLighting() {
+            // Ambient light with color variation
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.3);
+            scene.add(ambientLight);
+            
+            // Main directional light with shadows
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(100, 200, 50);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.camera.left = -100;
+            directionalLight.shadow.camera.right = 100;
+            directionalLight.shadow.camera.top = 100;
+            directionalLight.shadow.camera.bottom = -100;
+            directionalLight.shadow.camera.near = 0.1;
+            directionalLight.shadow.camera.far = 500;
+            directionalLight.shadow.mapSize.width = 4096;
+            directionalLight.shadow.mapSize.height = 4096;
+            directionalLight.shadow.bias = -0.0005;
+            scene.add(directionalLight);
+            
+            // Multiple colored point lights for atmosphere
+            const colors = [0xff00ff, 0x00ffff, 0xff00ff, 0xffff00, 0x00ff00];
+            for (let i = 0; i < 5; i++) {
+                const pointLight = new THREE.PointLight(colors[i], 2, 150);
+                pointLight.position.set(
+                    Math.sin(i * Math.PI * 2 / 5) * 50,
+                    10 + Math.random() * 20,
+                    Math.cos(i * Math.PI * 2 / 5) * 50
+                );
+                scene.add(pointLight);
+                
+                // Animated light movement
+                pointLight.userData = {
+                    originalPos: pointLight.position.clone(),
+                    offset: Math.random() * Math.PI * 2
                 };
-
-                // Голосовые команды
-                this.commands = {
-                    movement: {
-                        forward: ['вперед', 'forward', 'иди', 'двигайся'],
-                        back: ['назад', 'back', 'отступи'],
-                        left: ['лево', 'left', 'влево', 'поверни лево'],
-                        right: ['право', 'right', 'вправо', 'поверни право'],
-                        run: ['беги', 'run', 'быстрее', 'ускорься'],
-                        stop: ['стоп', 'stop', 'стой', 'остановись'],
-                        jump: ['прыжок', 'jump', 'прыгай', 'подпрыгни']
-                    },
-                    combat: {
-                        attack: ['атака', 'attack', 'бей', 'удар', 'ударь'],
-                        magic: ['магия', 'magic', 'заклинание', 'заклятие'],
-                        shield: ['щит', 'shield', 'защита', 'блок'],
-                        combo: ['комбо', 'combo', 'серия'],
-                        ultimate: ['ульта', 'ultimate', 'финиш', 'мощная атака']
-                    },
-                    interaction: {
-                        take: ['взять', 'take', 'подобрать'],
-                        open: ['открыть', 'open', 'открой'],
-                        menu: ['меню', 'menu', 'настройки', 'пауза'],
-                        help: ['помощь', 'help', 'команды']
-                    },
-                    camera: {
-                        up: ['камера вверх', 'вверх', 'посмотри вверх'],
-                        down: ['камера вниз', 'вниз', 'посмотри вниз']
-                    }
-                };
-
-                this.init();
             }
-
-            async init() {
-                this.setupEventListeners();
-                await this.initVoiceRecognition();
-                this.createParticles();
+            
+            // Spot lights for dramatic effect
+            const spotLight = new THREE.SpotLight(0xffffff, 2);
+            spotLight.position.set(0, 100, 0);
+            spotLight.angle = Math.PI / 6;
+            spotLight.penumbra = 0.2;
+            spotLight.decay = 2;
+            spotLight.distance = 200;
+            spotLight.castShadow = true;
+            spotLight.shadow.mapSize.width = 2048;
+            spotLight.shadow.mapSize.height = 2048;
+            scene.add(spotLight);
+        }
+        
+        function createMaterials() {
+            // Create procedural textures
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Metal texture
+            const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+            gradient.addColorStop(0, '#444');
+            gradient.addColorStop(0.5, '#888');
+            gradient.addColorStop(1, '#444');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Add noise
+            for (let i = 0; i < 10000; i++) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.1})`;
+                ctx.fillRect(Math.random() * 512, Math.random() * 512, 1, 1);
             }
-
-            setupEventListeners() {
-                document.getElementById('startBtn').addEventListener('click', () => {
-                    this.startGame();
-                });
+            
+            const metalTexture = new THREE.CanvasTexture(canvas);
+            
+            materials.metal = new THREE.MeshStandardMaterial({
+                map: metalTexture,
+                metalness: 0.9,
+                roughness: 0.2,
+                envMapIntensity: 1
+            });
+            
+            materials.glow = new THREE.MeshPhongMaterial({
+                emissive: 0x00ff88,
+                emissiveIntensity: 0.5,
+                color: 0x00ff88,
+                specular: 0xffffff,
+                shininess: 100
+            });
+            
+            materials.crystal = new THREE.MeshPhysicalMaterial({
+                color: 0x00ffff,
+                metalness: 0.2,
+                roughness: 0,
+                transmission: 0.9,
+                transparent: true,
+                opacity: 0.8,
+                reflectivity: 1,
+                refractionRatio: 0.98,
+                ior: 2.4
+            });
+        }
+        
+        function createEnvironment() {
+            // Ultra detailed ground with displacement
+            const groundGeometry = new THREE.PlaneGeometry(300, 300, 100, 100);
+            
+            // Create height map
+            const vertices = groundGeometry.attributes.position.array;
+            for (let i = 0; i < vertices.length; i += 3) {
+                const x = vertices[i];
+                const y = vertices[i + 1];
+                vertices[i + 2] = 
+                    Math.sin(x * 0.05) * Math.cos(y * 0.05) * 3 +
+                    Math.sin(x * 0.1) * 1.5 +
+                    Math.cos(y * 0.1) * 1.5 +
+                    Math.random() * 0.5;
             }
-
-            async initVoiceRecognition() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    document.getElementById('micStatus').textContent = '❌ Голосовое управление недоступно в этом браузере';
-                    return;
-                }
-
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SpeechRecognition();
-
-                this.recognition.continuous = true;
-                this.recognition.interimResults = true;
-                this.recognition.lang = 'ru-RU';
-
-                this.recognition.onstart = () => {
-                    this.isListening = true;
-                    document.getElementById('voiceIndicator').classList.add('listening');
-                    document.getElementById('voiceText').textContent = 'Слушаю команды...';
-                };
-
-                this.recognition.onresult = (event) => {
-                    const result = event.results[event.results.length - 1];
-                    if (result.isFinal) {
-                        const command = result[0].transcript.toLowerCase().trim();
-                        this.processVoiceCommand(command);
-                    }
-                };
-
-                this.recognition.onerror = (event) => {
-                    console.error('Speech recognition error:', event.error);
-                    if (event.error === 'not-allowed') {
-                        document.getElementById('micStatus').textContent = '❌ Разрешите доступ к микрофону';
-                    }
-                };
-
-                this.recognition.onend = () => {
-                    if (this.gameStarted) {
-                        // Перезапуск распознавания для непрерывного прослушивания
-                        setTimeout(() => {
-                            try {
-                                this.recognition.start();
-                            } catch (e) {
-                                console.log('Recognition restart failed:', e);
-                            }
-                        }, 100);
-                    }
-                };
-
-                document.getElementById('micStatus').textContent = '✅ Голосовое управление готово';
-            }
-
-            processVoiceCommand(command) {
-                console.log('Получена команда:', command);
-                document.getElementById('lastCommand').textContent = `Команда: "${command}"`;
-
-                // Поиск команды в категориях
-                let commandFound = false;
-
-                for (const category in this.commands) {
-                    for (const action in this.commands[category]) {
-                        const keywords = this.commands[category][action];
-                        if (keywords.some(keyword => command.includes(keyword))) {
-                            this.executeCommand(category, action, command);
-                            commandFound = true;
-                            break;
-                        }
-                    }
-                    if (commandFound) break;
-                }
-
-                if (!commandFound) {
-                    document.getElementById('voiceText').textContent = `Команда не распознана: "${command}"`;
-                    setTimeout(() => {
-                        document.getElementById('voiceText').textContent = 'Скажи команду...';
-                    }, 2000);
-                }
-            }
-
-            executeCommand(category, action, originalCommand) {
-                const actionText = {
-                    movement: {
-                        forward: '🏃 Движение вперед',
-                        back: '🔙 Движение назад', 
-                        left: '⬅️ Поворот влево',
-                        right: '➡️ Поворот вправо',
-                        run: '🏃💨 Ускорение',
-                        stop: '✋ Остановка',
-                        jump: '🦘 Прыжок'
-                    },
-                    combat: {
-                        attack: '⚔️ Атака!',
-                        magic: '✨ Магическое заклинание!',
-                        shield: '🛡️ Защита активирована',
-                        combo: '💫 Комбо атака!',
-                        ultimate: '🌟 УЛЬТИМАТИВНАЯ АТАКА!'
-                    },
-                    interaction: {
-                        take: '👋 Предмет взят',
-                        open: '🚪 Открываю...',
-                        menu: '📋 Открытие меню',
-                        help: '❓ Показ команд'
-                    },
-                    camera: {
-                        up: '📹⬆️ Камера вверх',
-                        down: '📹⬇️ Камера вниз'
-                    }
-                };
-
-                const text = actionText[category]?.[action] || '✅ Команда выполнена';
-                document.getElementById('voiceText').textContent = text;
-
-                // Визуальные эффекты для команд
-                this.triggerCommandEffect(category, action);
-
-                // Игровая логика
-                this.handleGameAction(category, action);
-
-                setTimeout(() => {
-                    document.getElementById('voiceText').textContent = 'Скажи команду...';
-                }, 2000);
-            }
-
-            triggerCommandEffect(category, action) {
-                const canvas = document.getElementById('gameCanvas');
-                const effect = document.createElement('div');
-
-                effect.style.position = 'fixed';
-                effect.style.top = Math.random() * window.innerHeight + 'px';
-                effect.style.left = Math.random() * window.innerWidth + 'px';
-                effect.style.width = '100px';
-                effect.style.height = '100px';
-                effect.style.borderRadius = '50%';
-                effect.style.pointerEvents = 'none';
-                effect.style.zIndex = '9999';
-
-                const colors = {
-                    movement: 'rgba(0, 255, 0, 0.8)',
-                    combat: 'rgba(255, 0, 0, 0.8)',
-                    interaction: 'rgba(0, 150, 255, 0.8)',
-                    camera: 'rgba(255, 255, 0, 0.8)'
-                };
-
-                effect.style.background = `radial-gradient(circle, ${colors[category] || 'rgba(255, 255, 255, 0.8)'}, transparent)`;
-                effect.style.animation = 'commandEffect 1s ease-out forwards';
-
-                // Добавляем CSS для анимации, если еще не добавлен
-                if (!document.querySelector('#commandEffectCSS')) {
-                    const style = document.createElement('style');
-                    style.id = 'commandEffectCSS';
-                    style.textContent = `
-                        @keyframes commandEffect {
-                            0% { transform: scale(0) rotate(0deg); opacity: 1; }
-                            50% { transform: scale(1) rotate(180deg); opacity: 0.8; }
-                            100% { transform: scale(2) rotate(360deg); opacity: 0; }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-
-                document.body.appendChild(effect);
-
-                setTimeout(() => {
-                    if (effect.parentNode) {
-                        effect.parentNode.removeChild(effect);
-                    }
-                }, 1000);
-            }
-
-            handleGameAction(category, action) {
-                if (category === 'combat') {
-                    // Уменьшение маны при атаке
-                    this.gameState.mana = Math.max(0, this.gameState.mana - 10);
-                    this.gameState.score += 10;
-                    this.updateHUD();
-                } else if (category === 'movement' && action === 'jump') {
-                    // Небольшая трата маны на прыжок
-                    this.gameState.mana = Math.max(0, this.gameState.mana - 5);
-                    this.updateHUD();
-                }
-
-                // Восстановление маны со временем
-                setTimeout(() => {
-                    this.gameState.mana = Math.min(100, this.gameState.mana + 2);
-                    this.updateHUD();
-                }, 1000);
-            }
-
-            updateHUD() {
-                document.getElementById('healthText').textContent = this.gameState.health;
-                document.getElementById('healthBar').style.width = this.gameState.health + '%';
-
-                document.getElementById('manaText').textContent = this.gameState.mana;
-                document.getElementById('manaBar').style.width = this.gameState.mana + '%';
-
-                document.getElementById('levelText').textContent = this.gameState.level;
-                document.getElementById('scoreText').textContent = this.gameState.score;
-                document.getElementById('enemiesText').textContent = this.gameState.enemies;
-            }
-
-            async startGame() {
-                try {
-                    // Запрос разрешения на микрофон
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
-
-                    document.getElementById('startScreen').classList.add('hidden');
-                    document.getElementById('gameHUD').classList.remove('hidden');
-
-                    this.gameStarted = true;
-                    this.init3DScene();
-                    this.startVoiceRecognition();
-                    this.gameLoop();
-
-                } catch (error) {
-                    document.getElementById('micStatus').textContent = '❌ Необходим доступ к микрофону для игры';
-                    console.error('Microphone access denied:', error);
-                }
-            }
-
-            startVoiceRecognition() {
-                if (this.recognition) {
-                    try {
-                        this.recognition.start();
-                    } catch (error) {
-                        console.error('Failed to start recognition:', error);
-                    }
-                }
-            }
-
-            init3DScene() {
-                const canvas = document.getElementById('gameCanvas');
-
-                // Настройка сцены
-                this.scene = new THREE.Scene();
-                this.scene.fog = new THREE.Fog(0x0a0a2e, 10, 100);
-
-                // Камера
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                this.camera.position.set(0, 5, 10);
-
-                // Рендерер
-                this.renderer = new THREE.WebGLRenderer({ 
-                    canvas: canvas, 
-                    antialias: true, 
-                    alpha: true 
-                });
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.shadowMap.enabled = true;
-                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                this.renderer.setClearColor(0x0a0a2e, 1);
-
-                // Освещение
-                const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
-                this.scene.add(ambientLight);
-
-                const directionalLight = new THREE.DirectionalLight(0x00ffff, 1);
-                directionalLight.position.set(10, 10, 5);
-                directionalLight.castShadow = true;
-                directionalLight.shadow.mapSize.width = 2048;
-                directionalLight.shadow.mapSize.height = 2048;
-                this.scene.add(directionalLight);
-
-                // Создание игрока (футуристический персонаж)
-                this.createPlayer();
-
-                // Создание окружения
-                this.createEnvironment();
-
-                // Создание врагов
-                this.createEnemies();
-
-                // Система частиц
-                this.createParticleSystem();
-
-                // Обработка изменения размера окна
-                window.addEventListener('resize', () => {
-                    this.camera.aspect = window.innerWidth / window.innerHeight;
-                    this.camera.updateProjectionMatrix();
-                    this.renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-            }
-
-            createPlayer() {
-                // Создание футуристического персонажа
-                const playerGroup = new THREE.Group();
-
-                // Основное тело (капсула)
-                const bodyGeometry = new THREE.CapsuleGeometry(0.5, 2, 8, 16);
-                const bodyMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x00ffff,
-                    emissive: 0x003333,
-                    shininess: 100
-                });
-                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-                body.position.y = 1;
-                body.castShadow = true;
-                playerGroup.add(body);
-
-                // Голова
-                const headGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-                const headMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x66ffff,
-                    emissive: 0x001166
-                });
-                const head = new THREE.Mesh(headGeometry, headMaterial);
-                head.position.y = 2.3;
-                head.castShadow = true;
-                playerGroup.add(head);
-
-                // Энергетические элементы
-                for (let i = 0; i < 8; i++) {
-                    const orbGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-                    const orbMaterial = new THREE.MeshBasicMaterial({ 
-                        color: 0x00ff66,
-                        emissive: 0x00ff66
-                    });
-                    const orb = new THREE.Mesh(orbGeometry, orbMaterial);
-                    const angle = (i / 8) * Math.PI * 2;
-                    orb.position.set(
-                        Math.cos(angle) * 0.7,
-                        1 + Math.sin(i * 0.5) * 0.3,
-                        Math.sin(angle) * 0.7
-                    );
-                    playerGroup.add(orb);
-                }
-
-                this.player = playerGroup;
-                this.player.position.set(0, 0, 0);
-                this.scene.add(this.player);
-            }
-
-            createEnvironment() {
-                // Создание футуристической платформы
-                const platformGeometry = new THREE.CylinderGeometry(15, 15, 0.5, 32);
-                const platformMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x1a1a3a,
-                    emissive: 0x000022
+            groundGeometry.computeVertexNormals();
+            
+            const groundMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a3e,
+                metalness: 0.3,
+                roughness: 0.8,
+                wireframe: false
+            });
+            
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            
+            // Glowing grid overlay
+            const gridGeometry = new THREE.PlaneGeometry(300, 300, 60, 60);
+            const gridMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.1,
+                blending: THREE.AdditiveBlending
+            });
+            const grid = new THREE.Mesh(gridGeometry, gridMaterial);
+            grid.rotation.x = -Math.PI / 2;
+            grid.position.y = 0.1;
+            scene.add(grid);
+            
+            // Floating platforms with detail
+            for (let i = 0; i < 15; i++) {
+                const platformGroup = new THREE.Group();
+                
+                // Main platform
+                const platformGeometry = new THREE.BoxGeometry(
+                    Math.random() * 15 + 8,
+                    2,
+                    Math.random() * 15 + 8
+                );
+                const platformMaterial = new THREE.MeshStandardMaterial({
+                    color: new THREE.Color().setHSL(Math.random(), 0.7, 0.4),
+                    metalness: 0.6,
+                    roughness: 0.3,
+                    emissive: new THREE.Color().setHSL(Math.random(), 0.7, 0.2),
+                    emissiveIntensity: 0.3
                 });
                 const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-                platform.position.y = -0.25;
+                platform.castShadow = true;
                 platform.receiveShadow = true;
-                this.scene.add(platform);
-
-                // Энергетические кольца вокруг платформы
-                for (let i = 0; i < 3; i++) {
-                    const ringGeometry = new THREE.RingGeometry(12 + i * 2, 12.2 + i * 2, 32);
-                    const ringMaterial = new THREE.MeshBasicMaterial({ 
-                        color: 0x00ffff,
-                        side: THREE.DoubleSide,
-                        transparent: true,
-                        opacity: 0.6
-                    });
-                    const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-                    ring.rotation.x = -Math.PI / 2;
-                    ring.position.y = 0.1 + i * 0.1;
-                    this.scene.add(ring);
-                }
-
-                // Энергетические столбы по периметру
-                for (let i = 0; i < 8; i++) {
-                    const angle = (i / 8) * Math.PI * 2;
-                    const pillarGeometry = new THREE.CylinderGeometry(0.2, 0.2, 5, 8);
-                    const pillarMaterial = new THREE.MeshPhongMaterial({ 
-                        color: 0x4400ff,
-                        emissive: 0x110044
-                    });
-                    const pillar = new THREE.Mesh(pillarGeometry, pillarMaterial);
-                    pillar.position.set(
-                        Math.cos(angle) * 12,
-                        2.5,
-                        Math.sin(angle) * 12
+                platformGroup.add(platform);
+                
+                // Add details to platform
+                const detailGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 8);
+                for (let j = 0; j < 4; j++) {
+                    const detail = new THREE.Mesh(detailGeometry, materials.glow);
+                    detail.position.set(
+                        (Math.random() - 0.5) * 5,
+                        1.5,
+                        (Math.random() - 0.5) * 5
                     );
-                    pillar.castShadow = true;
-                    this.scene.add(pillar);
-
-                    // Энергетический шар на вершине столба
-                    const orbGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-                    const orbMaterial = new THREE.MeshBasicMaterial({ 
-                        color: 0x00ff88,
-                        emissive: 0x00ff88
-                    });
-                    const orb = new THREE.Mesh(orbGeometry, orbMaterial);
-                    orb.position.set(
-                        Math.cos(angle) * 12,
-                        5.3,
-                        Math.sin(angle) * 12
-                    );
-                    this.scene.add(orb);
+                    platformGroup.add(detail);
                 }
+                
+                platformGroup.position.set(
+                    (Math.random() - 0.5) * 150,
+                    Math.random() * 15 + 5,
+                    (Math.random() - 0.5) * 150
+                );
+                
+                platformGroup.userData = {
+                    floatSpeed: Math.random() * 0.5 + 0.5,
+                    rotationSpeed: Math.random() * 0.01
+                };
+                
+                scene.add(platformGroup);
             }
-
-            createEnemies() {
-                this.enemies = [];
-
-                for (let i = 0; i < 5; i++) {
-                    const enemyGroup = new THREE.Group();
-
-                    // Основное тело врага
-                    const bodyGeometry = new THREE.OctahedronGeometry(0.8, 0);
-                    const bodyMaterial = new THREE.MeshPhongMaterial({ 
-                        color: 0xff0044,
-                        emissive: 0x330011
-                    });
-                    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-                    body.position.y = 1;
-                    body.castShadow = true;
-                    enemyGroup.add(body);
-
-                    // Энергетические шипы
-                    for (let j = 0; j < 4; j++) {
-                        const spikeGeometry = new THREE.ConeGeometry(0.1, 0.5, 8);
-                        const spikeMaterial = new THREE.MeshBasicMaterial({ 
-                            color: 0xff4400,
-                            emissive: 0xff4400
-                        });
-                        const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
-                        const angle = (j / 4) * Math.PI * 2;
-                        spike.position.set(
-                            Math.cos(angle) * 1,
-                            1.5,
-                            Math.sin(angle) * 1
-                        );
-                        spike.lookAt(
-                            spike.position.x * 2,
-                            spike.position.y,
-                            spike.position.z * 2
-                        );
-                        enemyGroup.add(spike);
-                    }
-
-                    // Размещение врагов по кругу
-                    const angle = (i / 5) * Math.PI * 2;
-                    enemyGroup.position.set(
-                        Math.cos(angle) * 8,
-                        0,
-                        Math.sin(angle) * 8
-                    );
-
-                    this.enemies.push(enemyGroup);
-                    this.scene.add(enemyGroup);
-                }
-            }
-
-            createParticleSystem() {
-                const particleCount = 100;
-                const particles = new THREE.BufferGeometry();
-                const positions = new Float32Array(particleCount * 3);
-                const colors = new Float32Array(particleCount * 3);
-
-                for (let i = 0; i < particleCount; i++) {
-                    positions[i * 3] = (Math.random() - 0.5) * 30;
-                    positions[i * 3 + 1] = Math.random() * 10;
-                    positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
-
-                    colors[i * 3] = Math.random();
-                    colors[i * 3 + 1] = Math.random();
-                    colors[i * 3 + 2] = 1;
-                }
-
-                particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-                const particleMaterial = new THREE.PointsMaterial({
-                    size: 0.1,
-                    vertexColors: true,
+            
+            // Mega detailed crystals
+            for (let i = 0; i < 30; i++) {
+                const crystalGroup = new THREE.Group();
+                
+                // Main crystal
+                const crystalGeometry = new THREE.OctahedronGeometry(Math.random() * 3 + 1, 2);
+                const crystalMaterial = new THREE.MeshPhysicalMaterial({
+                    color: new THREE.Color().setHSL(Math.random(), 1, 0.5),
+                    metalness: 0.2,
+                    roughness: 0,
+                    transmission: 0.9,
+                    transparent: true,
+                    opacity: 0.9,
+                    emissive: new THREE.Color().setHSL(Math.random(), 1, 0.3),
+                    emissiveIntensity: 0.5
+                });
+                const crystal = new THREE.Mesh(crystalGeometry, crystalMaterial);
+                crystal.castShadow = true;
+                crystalGroup.add(crystal);
+                
+                // Crystal glow
+                const glowGeometry = new THREE.SphereGeometry(3, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: crystalMaterial.color,
+                    transparent: true,
+                    opacity: 0.2,
                     blending: THREE.AdditiveBlending
                 });
-
-                this.particleSystem = new THREE.Points(particles, particleMaterial);
-                this.scene.add(this.particleSystem);
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                crystalGroup.add(glow);
+                
+                crystalGroup.position.set(
+                    (Math.random() - 0.5) * 200,
+                    Math.random() * 8 + 2,
+                    (Math.random() - 0.5) * 200
+                );
+                
+                crystalGroup.userData = {
+                    rotationSpeed: new THREE.Vector3(
+                        Math.random() * 0.02,
+                        Math.random() * 0.02,
+                        Math.random() * 0.02
+                    )
+                };
+                
+                scene.add(crystalGroup);
             }
-
-            createParticles() {
-                // Создание анимированных частиц на фоне
-                for (let i = 0; i < 50; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement('div');
-                        particle.className = 'particles';
-                        particle.style.left = Math.random() * window.innerWidth + 'px';
-                        particle.style.animationDelay = Math.random() * 6 + 's';
-                        particle.style.animationDuration = (3 + Math.random() * 3) + 's';
-                        document.body.appendChild(particle);
-
-                        setTimeout(() => {
-                            if (particle.parentNode) {
-                                particle.parentNode.removeChild(particle);
-                            }
-                        }, 8000);
-                    }, i * 100);
-                }
-
-                // Создание новых частиц каждые 8 секунд
-                setTimeout(() => this.createParticles(), 8000);
-            }
-
-            gameLoop() {
-                if (!this.gameStarted) return;
-
-                const time = Date.now() * 0.001;
-
-                // Анимация игрока
-                if (this.player) {
-                    this.player.rotation.y = Math.sin(time * 0.5) * 0.1;
-
-                    // Анимация энергетических элементов
-                    this.player.children.forEach((child, index) => {
-                        if (index > 1) { // Пропускаем тело и голову
-                            child.position.y = 1 + Math.sin(time * 2 + index) * 0.2;
-                            child.material.emissive.setHSL((time * 0.5 + index * 0.1) % 1, 1, 0.3);
-                        }
-                    });
-                }
-
-                // Анимация врагов
-                this.enemies.forEach((enemy, index) => {
-                    enemy.rotation.y = time * 0.5 + index;
-                    enemy.position.y = Math.sin(time * 2 + index) * 0.3;
-
-                    // Анимация шипов
-                    enemy.children.forEach((child, childIndex) => {
-                        if (childIndex > 0) {
-                            child.rotation.z = time * 2;
-                        }
-                    });
-                });
-
-                // Анимация системы частиц
-                if (this.particleSystem) {
-                    this.particleSystem.rotation.y = time * 0.1;
-                    const positions = this.particleSystem.geometry.attributes.position.array;
-                    for (let i = 1; i < positions.length; i += 3) {
-                        positions[i] += Math.sin(time + i) * 0.01;
-                    }
-                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
-                }
-
-                // Движение камеры по орбите
-                const radius = 10;
-                this.camera.position.x = Math.cos(time * 0.2) * radius;
-                this.camera.position.z = Math.sin(time * 0.2) * radius;
-                this.camera.position.y = 5 + Math.sin(time * 0.3) * 2;
-                this.camera.lookAt(0, 1, 0);
-
-                // Рендеринг сцены
-                if (this.renderer && this.scene && this.camera) {
-                    this.renderer.render(this.scene, this.camera);
-                }
-
-                requestAnimationFrame(() => this.gameLoop());
+            
+            // Pillars
+            const pillarGeometry = new THREE.CylinderGeometry(2, 3, 30, 12, 5);
+            for (let i = 0; i < 8; i++) {
+                const pillar = new THREE.Mesh(pillarGeometry, materials.metal);
+                const angle = (i / 8) * Math.PI * 2;
+                pillar.position.set(
+                    Math.sin(angle) * 80,
+                    15,
+                    Math.cos(angle) * 80
+                );
+                pillar.castShadow = true;
+                pillar.receiveShadow = true;
+                scene.add(pillar);
             }
         }
-
-        // Запуск игры после загрузки DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            window.game = new VoiceGuardian3D();
+        
+        function createSkybox() {
+            // Create starfield
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 2,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            const starsVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starsVertices.push(x, y, z);
+            }
+            
+            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+            const starField = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(starField);
+            
+            // Add nebula effect
+            const nebulaGeometry = new THREE.SphereGeometry(500, 32, 32);
+            const nebulaMaterial = new THREE.MeshBasicMaterial({
+                color: 0x440088,
+                side: THREE.BackSide,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+            scene.add(nebula);
+        }
+        
+        function createPlayer() {
+            const playerGroup = new THREE.Group();
+            
+            // Complex player model
+            const bodyGeometry = new THREE.CylinderGeometry(0.5, 1, 3, 8);
+            const bodyMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x00ff88,
+                emissive: 0x00ff88,
+                emissiveIntensity: 0.3,
+                specular: 0xffffff,
+                shininess: 100
+            });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            playerGroup.add(body);
+            
+            // Head
+            const headGeometry = new THREE.SphereGeometry(0.6, 16, 16);
+            const head = new THREE.Mesh(headGeometry, bodyMaterial);
+            head.position.y = 2;
+            playerGroup.add(head);
+            
+            // Arms
+            const armGeometry = new THREE.BoxGeometry(0.3, 2, 0.3);
+            const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
+            leftArm.position.set(-0.8, 0, 0);
+            playerGroup.add(leftArm);
+            
+            const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
+            rightArm.position.set(0.8, 0, 0);
+            playerGroup.add(rightArm);
+            
+            // Player shield effect
+            const shieldGeometry = new THREE.SphereGeometry(2.5, 32, 32);
+            const shieldMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                transparent: true,
+                opacity: 0.1,
+                wireframe: true
+            });
+            const shield = new THREE.Mesh(shieldGeometry, shieldMaterial);
+            playerGroup.add(shield);
+            
+            // Player glow
+            const glowGeometry = new THREE.SphereGeometry(3, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ff88,
+                transparent: true,
+                opacity: 0.15,
+                blending: THREE.AdditiveBlending
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            playerGroup.add(glow);
+            
+            player = playerGroup;
+            player.position.set(0, 3, 0);
+            player.castShadow = true;
+            scene.add(player);
+            
+            playerModel = playerGroup;
+        }
+        
+        function createEnemies() {
+            for (let i = 0; i < 8; i++) {
+                const enemyGroup = new THREE.Group();
+                
+                // Enemy body
+                const enemyGeometry = new THREE.DodecahedronGeometry(1.5, 1);
+                const enemyMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xff0044,
+                    emissive: 0xff0044,
+                    emissiveIntensity: 0.4,
+                    specular: 0xffffff,
+                    shininess: 50
+                });
+                const enemyMesh = new THREE.Mesh(enemyGeometry, enemyMaterial);
+                enemyMesh.castShadow = true;
+                enemyGroup.add(enemyMesh);
+                
+                // Enemy spikes
+                const spikeGeometry = new THREE.ConeGeometry(0.3, 1.5, 4);
+                for (let j = 0; j < 6; j++) {
+                    const spike = new THREE.Mesh(spikeGeometry, enemyMaterial);
+                    const angle = (j / 6) * Math.PI * 2;
+                    spike.position.set(
+                        Math.sin(angle) * 1.5,
+                        0,
+                        Math.cos(angle) * 1.5
+                    );
+                    spike.rotation.z = Math.PI / 2;
+                    spike.lookAt(new THREE.Vector3(0, 0, 0));
+                    enemyGroup.add(spike);
+                }
+                
+                // Enemy glow
+                const glowGeometry = new THREE.SphereGeometry(2.5, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xff0044,
+                    transparent: true,
+                    opacity: 0.2,
+                    blending: THREE.AdditiveBlending
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                enemyGroup.add(glow);
+                
+                enemyGroup.position.set(
+                    (Math.random() - 0.5) * 120,
+                    3,
+                    (Math.random() - 0.5) * 120
+                );
+                
+                enemyGroup.userData = { 
+                    speed: Math.random() * 0.03 + 0.02,
+                    rotationSpeed: Math.random() * 0.05,
+                    health: 3,
+                    type: 'enemy'
+                };
+                
+                enemies.push(enemyGroup);
+                scene.add(enemyGroup);
+            }
+        }
+        
+        function createCollectibles() {
+            for (let i = 0; i < 15; i++) {
+                const collectibleGroup = new THREE.Group();
+                
+                // Main collectible
+                const collectibleGeometry = new THREE.TorusGeometry(1, 0.4, 16, 32);
+                const collectibleMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffff00,
+                    emissive: 0xffff00,
+                    emissiveIntensity: 0.6,
+                    specular: 0xffffff,
+                    shininess: 100
+                });
+                const collectible = new THREE.Mesh(collectibleGeometry, collectibleMaterial);
+                collectible.castShadow = true;
+                collectibleGroup.add(collectible);
+                
+                // Inner sphere
+                const sphereGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+                const sphereMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffffff,
+                    emissive: 0xffffff,
+                    emissiveIntensity: 0.8
+                });
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                collectibleGroup.add(sphere);
+                
+                // Collectible glow
+                const glowGeometry = new THREE.SphereGeometry(2, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffff00,
+                    transparent: true,
+                    opacity: 0.3,
+                    blending: THREE.AdditiveBlending
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                collectibleGroup.add(glow);
+                
+                collectibleGroup.position.set(
+                    (Math.random() - 0.5) * 150,
+                    Math.random() * 10 + 3,
+                    (Math.random() - 0.5) * 150
+                );
+                
+                collectibleGroup.userData = {
+                    rotationSpeed: 0.05,
+                    floatSpeed: Math.random() * 2 + 1
+                };
+                
+                collectibles.push(collectibleGroup);
+                scene.add(collectibleGroup);
+            }
+        }
+        
+        function createParticleSystem() {
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 1000;
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 300;
+                positions[i + 1] = Math.random() * 100;
+                positions[i + 2] = (Math.random() - 0.5) * 300;
+                
+                colors[i] = Math.random();
+                colors[i + 1] = Math.random();
+                colors[i + 2] = Math.random();
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particleSystem);
+            particles.push(particleSystem);
+        }
+        
+        function setupVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Ваш браузер не поддерживает голосовое управление. Используйте Chrome или Edge.');
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'ru-RU'; // РУССКИЙ ЯЗЫК!
+            
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('voiceIndicator').classList.add('active');
+                document.getElementById('commandDisplay').textContent = 'Слушаю...';
+            };
+            
+            recognition.onresult = (event) => {
+                const last = event.results.length - 1;
+                const command = event.results[last][0].transcript.toLowerCase().trim();
+                
+                if (event.results[last].isFinal) {
+                    processVoiceCommand(command);
+                    document.getElementById('commandDisplay').textContent = `Команда: "${command}"`;
+                    
+                    // Visual feedback
+                    createCommandEffect();
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Ошибка распознавания:', event.error);
+                document.getElementById('commandDisplay').textContent = 'Ошибка: ' + event.error;
+                
+                // Auto-restart
+                if (event.error === 'no-speech' || event.error === 'audio-capture') {
+                    setTimeout(() => {
+                        if (gameStarted && recognition) {
+                            recognition.start();
+                        }
+                    }, 1000);
+                }
+            };
+            
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('voiceIndicator').classList.remove('active');
+                
+                // Auto-restart
+                if (gameStarted) {
+                    setTimeout(() => {
+                        if (gameStarted && recognition) {
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                console.log('Перезапуск распознавания...');
+                            }
+                        }
+                    }, 500);
+                }
+            };
+        }
+        
+        function processVoiceCommand(command) {
+            // Reset movements
+            moveForward = false;
+            moveBackward = false;
+            moveLeft = false;
+            moveRight = false;
+            turboMode = false;
+            
+            // РУССКИЕ КОМАНДЫ
+            if (command.includes('вперёд') || command.includes('вперед') || command.includes('иди') || 
+                command.includes('пошёл') || command.includes('пошел') || command.includes('вперёд')) {
+                moveForward = true;
+                createParticleExplosion(player.position, 0x00ff00, 50);
+            } 
+            
+            if (command.includes('назад') || command.includes('обратно') || command.includes('отступ')) {
+                moveBackward = true;
+                createParticleExplosion(player.position, 0xffff00, 50);
+            }
+            
+            if (command.includes('влево') || command.includes('лево') || command.includes('налево')) {
+                moveLeft = true;
+                createParticleExplosion(player.position, 0x00ffff, 50);
+            }
+            
+            if (command.includes('вправо') || command.includes('право') || command.includes('направо')) {
+                moveRight = true;
+                createParticleExplosion(player.position, 0xff00ff, 50);
+            }
+            
+            if (command.includes('прыг') || command.includes('прыжок') || command.includes('скок') || 
+                command.includes('подпрыг')) {
+                if (canJump) {
+                    velocity.y = 15;
+                    canJump = false;
+                    createParticleExplosion(player.position, 0xffffff, 100);
+                    setTimeout(() => { canJump = true; }, 1000);
+                }
+            }
+            
+            if (command.includes('атак') || command.includes('огонь') || command.includes('бей') || 
+                command.includes('стрел') || command.includes('пли') || command.includes('бах')) {
+                attack();
+            }
+            
+            if (command.includes('стоп') || command.includes('стой') || command.includes('остан')) {
+                moveForward = false;
+                moveBackward = false;
+                moveLeft = false;
+                moveRight = false;
+                velocity.set(0, velocity.y, 0);
+                createParticleExplosion(player.position, 0xff0000, 30);
+            }
+            
+            if (command.includes('турбо') || command.includes('быстр') || command.includes('ускор')) {
+                turboMode = true;
+                createParticleExplosion(player.position, 0xff00ff, 150);
+            }
+            
+            // Auto-stop movement after delay
+            setTimeout(() => {
+                moveForward = false;
+                moveBackward = false;
+                moveLeft = false;
+                moveRight = false;
+                turboMode = false;
+            }, 3000);
+        }
+        
+        function attack() {
+            // Create multiple projectiles
+            for (let i = -1; i <= 1; i++) {
+                const projectileGroup = new THREE.Group();
+                
+                // Main projectile
+                const projectileGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+                const projectileMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 1
+                });
+                const projectile = new THREE.Mesh(projectileGeometry, projectileMaterial);
+                projectileGroup.add(projectile);
+                
+                // Projectile trail
+                const trailGeometry = new THREE.ConeGeometry(0.2, 2, 8);
+                const trail = new THREE.Mesh(trailGeometry, projectileMaterial);
+                trail.rotation.x = Math.PI / 2;
+                trail.position.z = 1;
+                projectileGroup.add(trail);
+                
+                // Projectile glow
+                const glowGeometry = new THREE.SphereGeometry(1, 8, 8);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00ffff,
+                    transparent: true,
+                    opacity: 0.3,
+                    blending: THREE.AdditiveBlending
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                projectileGroup.add(glow);
+                
+                projectileGroup.position.copy(player.position);
+                projectileGroup.position.y += 2;
+                projectileGroup.position.x += i * 2;
+                
+                const direction = new THREE.Vector3(i * 0.2, 0, -1);
+                direction.normalize();
+                projectileGroup.userData.velocity = direction.multiplyScalar(50);
+                
+                projectiles.push(projectileGroup);
+                scene.add(projectileGroup);
+            }
+            
+            createParticleExplosion(player.position, 0x00ffff, 100);
+        }
+        
+        function createParticleExplosion(position, color, count) {
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const velocities = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            
+            const colorObj = new THREE.Color(color);
+            
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = position.x;
+                positions[i + 1] = position.y;
+                positions[i + 2] = position.z;
+                
+                velocities[i] = (Math.random() - 0.5) * 20;
+                velocities[i + 1] = Math.random() * 20;
+                velocities[i + 2] = (Math.random() - 0.5) * 20;
+                
+                colors[i] = colorObj.r;
+                colors[i + 1] = colorObj.g;
+                colors[i + 2] = colorObj.b;
+            }
+            
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 1
+            });
+            
+            const particleSystem = new THREE.Points(geometry, material);
+            particleSystem.userData = {
+                velocities: velocities,
+                life: 1.0
+            };
+            
+            particles.push(particleSystem);
+            scene.add(particleSystem);
+        }
+        
+        function createCommandEffect() {
+            // Visual feedback for command recognition
+            const flash = document.createElement('div');
+            flash.style.position = 'absolute';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.width = '100%';
+            flash.style.height = '100%';
+            flash.style.background = 'radial-gradient(circle, rgba(0,255,255,0.2), transparent)';
+            flash.style.pointerEvents = 'none';
+            flash.style.zIndex = '99';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => flash.remove(), 200);
+        }
+        
+        function updatePlayer(delta) {
+            // Apply gravity
+            velocity.y -= 30 * delta;
+            
+            // Movement speed
+            const speed = turboMode ? 25 : 12;
+            
+            // Movement with smooth acceleration
+            if (moveForward) velocity.z = -speed;
+            if (moveBackward) velocity.z = speed;
+            if (moveLeft) velocity.x = -speed;
+            if (moveRight) velocity.x = speed;
+            
+            // Apply velocity
+            player.position.x += velocity.x * delta;
+            player.position.z += velocity.z * delta;
+            player.position.y += velocity.y * delta;
+            
+            // Ground collision
+            if (player.position.y < 3) {
+                player.position.y = 3;
+                velocity.y = 0;
+                canJump = true;
+            }
+            
+            // Friction
+            velocity.x *= 0.85;
+            velocity.z *= 0.85;
+            
+            // Boundaries
+            player.position.x = Math.max(-140, Math.min(140, player.position.x));
+            player.position.z = Math.max(-140, Math.min(140, player.position.z));
+            
+            // Player rotation animation
+            player.rotation.y += delta;
+            player.children.forEach((child, i) => {
+                if (child.geometry instanceof THREE.SphereGeometry && child.material.wireframe) {
+                    child.rotation.y -= delta * 2;
+                    child.rotation.x += delta;
+                }
+            });
+            
+            // Camera follow with smooth movement
+            const cameraTargetX = player.position.x;
+            const cameraTargetY = player.position.y + 10;
+            const cameraTargetZ = player.position.z + 20;
+            
+            camera.position.x += (cameraTargetX - camera.position.x) * 0.1;
+            camera.position.y += (cameraTargetY - camera.position.y) * 0.1;
+            camera.position.z += (cameraTargetZ - camera.position.z) * 0.1;
+            
+            camera.lookAt(player.position);
+        }
+        
+        function updateEnemies(delta) {
+            enemies.forEach((enemy, index) => {
+                if (enemy.userData.health <= 0) {
+                    scene.remove(enemy);
+                    enemies.splice(index, 1);
+                    score += 200;
+                    updateScore();
+                    createParticleExplosion(enemy.position, 0xff0044, 200);
+                    
+                    // Respawn
+                    setTimeout(() => createEnemies(), 5000);
+                    return;
+                }
+                
+                // AI movement
+                const direction = new THREE.Vector3();
+                direction.subVectors(player.position, enemy.position);
+                direction.normalize();
+                
+                const speed = enemy.userData.speed * 100;
+                enemy.position.x += direction.x * speed * delta;
+                enemy.position.z += direction.z * speed * delta;
+                
+                // Enemy animations
+                enemy.rotation.x += enemy.userData.rotationSpeed;
+                enemy.rotation.y += enemy.userData.rotationSpeed * 1.5;
+                
+                // Bobbing motion
+                enemy.position.y = 3 + Math.sin(Date.now() * 0.001 + index) * 2;
+                
+                // Collision with player
+                if (enemy.position.distanceTo(player.position) < 4) {
+                    health -= 5;
+                    updateHealth();
+                    
+                    // Knockback
+                    enemy.position.x -= direction.x * 15;
+                    enemy.position.z -= direction.z * 15;
+                    
+                    createParticleExplosion(enemy.position, 0xff0000, 50);
+                    
+                    if (health <= 0) {
+                        gameOver();
+                    }
+                }
+            });
+        }
+        
+        function updateProjectiles(delta) {
+            projectiles.forEach((projectile, pIndex) => {
+                projectile.position.add(projectile.userData.velocity.clone().multiplyScalar(delta));
+                projectile.rotation.z += delta * 10;
+                
+                // Check collision with enemies
+                enemies.forEach((enemy) => {
+                    if (projectile.position.distanceTo(enemy.position) < 3) {
+                        enemy.userData.health--;
+                        scene.remove(projectile);
+                        projectiles.splice(pIndex, 1);
+                        
+                        createParticleExplosion(enemy.position, 0xff00ff, 100);
+                    }
+                });
+                
+                // Remove far projectiles
+                if (projectile.position.length() > 200) {
+                    scene.remove(projectile);
+                    projectiles.splice(pIndex, 1);
+                }
+            });
+        }
+        
+        function updateCollectibles(delta) {
+            collectibles.forEach((collectible, index) => {
+                // Rotation and floating
+                collectible.rotation.y += collectible.userData.rotationSpeed;
+                collectible.rotation.z += collectible.userData.rotationSpeed * 0.5;
+                collectible.position.y += Math.sin(Date.now() * 0.001 * collectible.userData.floatSpeed) * 0.02;
+                
+                // Collection
+                if (collectible.position.distanceTo(player.position) < 4) {
+                    scene.remove(collectible);
+                    collectibles.splice(index, 1);
+                    
+                    score += 100;
+                    health = Math.min(100, health + 15);
+                    updateScore();
+                    updateHealth();
+                    
+                    createParticleExplosion(collectible.position, 0xffff00, 150);
+                    
+                    // Respawn
+                    setTimeout(() => createCollectibles(), 7000);
+                }
+            });
+        }
+        
+        function updateParticles(delta) {
+            particles.forEach((particleSystem, index) => {
+                if (particleSystem.userData.velocities) {
+                    const positions = particleSystem.geometry.attributes.position.array;
+                    const velocities = particleSystem.userData.velocities;
+                    
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i] += velocities[i] * delta;
+                        positions[i + 1] += velocities[i + 1] * delta;
+                        positions[i + 2] += velocities[i + 2] * delta;
+                        
+                        velocities[i + 1] -= 20 * delta; // Gravity
+                    }
+                    
+                    particleSystem.geometry.attributes.position.needsUpdate = true;
+                    
+                    // Fade out
+                    particleSystem.userData.life -= delta;
+                    particleSystem.material.opacity = particleSystem.userData.life;
+                    
+                    if (particleSystem.userData.life <= 0) {
+                        scene.remove(particleSystem);
+                        particles.splice(index, 1);
+                    }
+                }
+            });
+        }
+        
+        function updateAnimations(delta) {
+            // Animate lights
+            scene.children.forEach(child => {
+                if (child instanceof THREE.PointLight && child.userData.originalPos) {
+                    const time = Date.now() * 0.001;
+                    child.position.x = child.userData.originalPos.x + Math.sin(time + child.userData.offset) * 10;
+                    child.position.z = child.userData.originalPos.z + Math.cos(time + child.userData.offset) * 10;
+                }
+                
+                // Animate crystals
+                if (child.userData && child.userData.rotationSpeed) {
+                    if (child.userData.rotationSpeed instanceof THREE.Vector3) {
+                        child.rotation.x += child.userData.rotationSpeed.x;
+                        child.rotation.y += child.userData.rotationSpeed.y;
+                        child.rotation.z += child.userData.rotationSpeed.z;
+                    } else {
+                        child.rotation.y += child.userData.rotationSpeed;
+                    }
+                }
+                
+                // Animate platforms
+                if (child.userData && child.userData.floatSpeed) {
+                    child.position.y += Math.sin(Date.now() * 0.001 * child.userData.floatSpeed) * 0.01;
+                }
+            });
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = `Очки: ${score}`;
+        }
+        
+        function updateHealth() {
+            document.getElementById('healthFill').style.width = `${health}%`;
+            
+            if (health < 30) {
+                document.getElementById('healthFill').style.background = 'linear-gradient(90deg, #ff0000, #ff0000)';
+            } else if (health < 60) {
+                document.getElementById('healthFill').style.background = 'linear-gradient(90deg, #ff6600, #ffaa00)';
+            } else {
+                document.getElementById('healthFill').style.background = 'linear-gradient(90deg, #00ff00, #00ffff)';
+            }
+        }
+        
+        function updateFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime >= lastTime + 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                document.getElementById('fpsCounter').textContent = `FPS: ${fps}`;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+        }
+        
+        function gameOver() {
+            gameStarted = false;
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            alert(`ИГРА ОКОНЧЕНА!\nВаши очки: ${score}\n\nНажмите OK для перезапуска`);
+            location.reload();
+        }
+        
+        function animate() {
+            if (!gameStarted) return;
+            
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            
+            updatePlayer(delta);
+            updateEnemies(delta);
+            updateProjectiles(delta);
+            updateCollectibles(delta);
+            updateParticles(delta);
+            updateAnimations(delta);
+            updateFPS();
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Start button
+        document.getElementById('startButton').addEventListener('click', () => {
+            document.getElementById('startButton').style.display = 'none';
+            gameStarted = true;
+            
+            setupVoiceRecognition();
+            if (recognition) {
+                recognition.start();
+            }
+            
+            animate();
         });
+        
+        // Window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Keyboard controls (backup)
+        document.addEventListener('keydown', (e) => {
+            if (!gameStarted) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'w': case 'ц': moveForward = true; break;
+                case 's': case 'ы': moveBackward = true; break;
+                case 'a': case 'ф': moveLeft = true; break;
+                case 'd': case 'в': moveRight = true; break;
+                case ' ': 
+                    if (canJump) {
+                        velocity.y = 15;
+                        canJump = false;
+                    }
+                    break;
+                case 'e': case 'у': attack(); break;
+                case 'shift': turboMode = true; break;
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            switch(e.key.toLowerCase()) {
+                case 'w': case 'ц': moveForward = false; break;
+                case 's': case 'ы': moveBackward = false; break;
+                case 'a': case 'ф': moveLeft = false; break;
+                case 'd': case 'в': moveRight = false; break;
+                case 'shift': turboMode = false; break;
+            }
+        });
+        
+        // Initialize
+        init();
     </script>
 </body>
 </html>
